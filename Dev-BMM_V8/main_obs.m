@@ -12,14 +12,15 @@ clear
 % Obstacles: ro is the size (side) of a square obstacle and
 % Ro the spacing between the center of two obstacles
 % R is the radius of interaction for the perceived density
-T = 1; A = 0.1; B = 1; 
+T = 100; A = 0.03; B = 1; 
 R = 0.2;
 Nfiles = 20; 
 nameFolder = 'DBG-BoundaryStability-0407';
 suffix = 'Advection';
 runnb = '0';
 % A standstill, B advection, C adv-obstacles, D attraction, E att-obstacles
-type = 'E'; 
+% F Root alone
+type = 'F'; 
 
 % Numerical parameters
 nx = 300;
@@ -30,8 +31,12 @@ ny = nx;
 nameFile = [type runnb '-' suffix '-' num2str(nx)];
 
 % Domain
-Domain = [-1.5, 1.5, -1.5, 1.5];
-Space = [-1, 1, -1, 1];
+Domain = [-25, 25, -25, 25];
+Space = [-20, 20, -20, 20];
+
+% Bacteria
+InitSpace = [-15, 15, -15, 0];
+InitValue = 0.5;
 
 switch type
     case 'A'
@@ -54,14 +59,16 @@ switch type
         typeAt = 'up';
         typeObs = 'particles';
         typeVel = 'att';
+    case 'F'
+        typeAt = 'root';
+        typeObs = 'none';
+        typeVel = 'adv';
+        
     otherwise
         disp('Unknown case. Abort')
         return
 end
 
-% Bacteria
-InitSpace = [-0.4, 0.4, -0.4, 0.4];
-InitValue = 0.5;
 
 % Serial obstacles: Ro obstacle center spacing, ro obstacle size, re
 % repelent region around obstacles
@@ -75,6 +82,8 @@ Axis = Space;
 
 %% Initialisation
 % make directory
+mkdir('Results')
+nameFolder = ['Results\' nameFolder];
 folderData = [nameFolder '\Data-' nameFile];
 mkdir(nameFolder)
 mkdir(folderData)
@@ -88,8 +97,8 @@ addpath('..\Toolbox')
 %     fGridGeneration(nx,ny, Domain, Space, Attractant, Obstacles);
 
 [X,Y,Dx,Dy] = fGridGeneration(nx,ny,Domain);
-PhiAt = fAttractantGeneration(X,Y,typeAt);
-PhiBd = fBoundaryGeneration(X,Y,PhiAt,typeAt,typeObs);
+PhiAt = fAttractantGeneration(X,Y,Attractant,typeAt);
+PhiBd = fBoundaryGeneration(X,Y,PhiAt,Space,typeAt,typeObs);
 PhiDef = ones(size(X))-PhiAt-PhiBd;
 
 % Constants domain

@@ -62,6 +62,6 @@ b = b - CFL*(LF(:,2:end)-LF(:,1:end-1));
 % Dirichlet 0 + flux limiter at exit
 % b = b.*PhiDef+PhiAt.*min(b,0.2*ones(size(b)));
 % Dirichlet 0
-b = b.*PhiDef;
+% b = b.*PhiDef;
 end
 
