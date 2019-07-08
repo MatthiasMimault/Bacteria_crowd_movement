@@ -22,7 +22,7 @@ end
 
 %% Generation obstacles
 if strcmp(typeObs,'particles')
-    Ro = 4; ro = 2;
+    Ro = 10; ro = 4;
     Obstacle = fObstacleGeneration(Space,Attractant,Ro,ro);
     s = size(Obstacle);
     No = s(1);

@@ -4,6 +4,7 @@
 % generation (validated mostly, no wrong case found for CFL 0.1-0.8)
 % V1.72 - Correction of behaviour at boundary: Solved, but Velocity
 % orientation troubling
+% V1.8 - Stable method. Problem at vector field generation
 close all
 clear
 
@@ -13,11 +14,11 @@ clear
 % Ro the spacing between the center of two obstacles
 % R is the radius of interaction for the perceived density
 T = 10; A = 0.03; B = 1; 
-R = 1;
+R = 0.5;
 Nfiles = 10; 
-typeTest = 'DEV';
+typeTest = 'CLB';
 dateTest = '0507';
-runnb = '1-R1';
+runnb = '3-R05e05';
 % A standstill, B advection, C adv-obstacles, D attraction, E att-obstacles
 % F Root alone
 type = 'H'; 
@@ -32,11 +33,11 @@ ny = nx;
 % Domain
 Domain = [-25, 25, -25, 25];
 Space = [-20, 20, -20, 20];
-Attractant = [-1 1 2 20];
+Attractant = [-1 1 10 20];
 % Attractant = [-20 20 20 25];
 
 % Bacteria
-InitSpace = [-15, 15, -15, 0];
+InitSpace = [-19, 19, -19, -5];
 InitValue = 0.1;
 
 switch type

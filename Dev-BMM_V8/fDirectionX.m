@@ -1,7 +1,7 @@
 function Vx = fDirectionX(b,Vxo,Vyo,Ex,Ey,PhiDef)
 
 %% Parameters
-epsilon = 1;
+epsilon = 0.5;
 
 %% Vx computation
 % Perceived density
