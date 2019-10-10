@@ -12,8 +12,6 @@ runnb = '1';
 suffix = 'SimpleAdvection';
 
 % Physical parameters
-% T is time in s, A is bacteria average velocity, C is diffusion coeff.
-% R is /// mm, epsilon is interaction strength
 T = 200; A = 0.03; C = 0; 
 R = 2; epsilon = 0.5;
 
@@ -31,7 +29,6 @@ Domain = [-25, 25, -25, 25];
 Space = [-20, 20, -20, 20];
 Attractant = [-20 20 20 25];
 InitBact = [-19.25, 19.25, -19.25, -5.25]; 
-Source = [-20 20 -25 -20]; 
 
 % Folders
 addpath('..\Data')
