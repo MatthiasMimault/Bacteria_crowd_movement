@@ -1,6 +1,6 @@
 function [domAt, domBd, domDef, domSrc] = fRegionGeneration(...
 X, Y, Domain, Space, Attractant, Source)
-global Dx Dy typeAt typeSrc
+global Dx Dy typeAt
 % Define the numerical domain of definition, attractant, boundary and
 % source based on geometric input and a grid X;
 
@@ -8,10 +8,12 @@ global Dx Dy typeAt typeSrc
 domAt = fAttractantGen(X,Y,Dx,Dy,Attractant,typeAt);
 
 % Source region
-domSrc = fSourceGen(X,Y,Dx,Dy,Source,typeSrc);
+domSrc = zeros(size(X));
 
 % Boundary region
 domBd = zeros(size(X));
+
+
 
 domDef = zeros(size(X));
 end
@@ -39,11 +41,12 @@ switch typeAt
 end
 end
 
-function domSrc = fSourceGen(X,Y,Dx,Dy,Source,typeSrc)
+function domSrc= fSourceGen(X,Y,Dx,Dy,Source,typeSrc)
 % domBd = zeros(size(X));
 switch typeSrc
     case 'bottom'
-        domSrc = (X>Source(1)-Dx/2).*(X<Source(2)+Dx/2)...
+        domSrc = ones(size(X))...
+        -(X>Source(1)-Dx/2).*(X<Source(2)+Dx/2)...
         .*(Y>Source(3)-Dy/2).*(Y<Source(4)+Dy/2);
     case 'Ulow'
         domSrc = ones(size(X))...
@@ -54,8 +57,4 @@ switch typeSrc
     otherwise
         domSrc = zeros(size(X));
 end
-end
-
-function domBd = fBoundaryGen(X,Y,Dx,Dy,Space,domAt,domSrc)
-
 end

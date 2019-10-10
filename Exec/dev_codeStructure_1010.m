@@ -10,12 +10,15 @@ caseType = 'A';
 caseDate = '1010';
 runnb = '1';
 suffix = 'SimpleAdvection';
+global Dx Dy typeAt typeSrc
 
 % Physical parameters
 % T is time in s, A is bacteria average velocity, C is diffusion coeff.
 % R is /// mm, epsilon is interaction strength
 T = 200; A = 0.03; C = 0; 
 R = 2; epsilon = 0.5;
+typeAt = 'up';
+typeSrc = 'bottom';
 
 % Run parameters
 debug = 'true';
@@ -56,5 +59,8 @@ mkdir(pngFolder)
 
 %% 1. Initialisation
 [X,Y,Dx,Dy] = fGridGeneration(nx,ny,Domain);
+
 [domAt, domBd, domDef, domSrc] ...
-    = fRegionGeneration(X, Domain, Space, Attractant, Source);
+    = fRegionGeneration(X, Y, Domain, Space, Attractant, Source);
+contourf(domAt+2*domBd+3*domSrc)
+colorbar
