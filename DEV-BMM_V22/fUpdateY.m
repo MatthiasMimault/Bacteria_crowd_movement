@@ -39,11 +39,11 @@ Vmy = [zeros(1,nx);Vy-VbdD];
 
 fpy = Vpy.*f(Upy);
 fmy = Vmy.*f(Umy);
-figure
-contourf(fpy)
-figure
-contourf(fmy)
-pause
+% figure
+% contourf(fpy)
+% figure
+% contourf(fmy)
+% pause
     
 %% Quantity update
 LG = LxG(fpy,fmy,Upy,Umy);

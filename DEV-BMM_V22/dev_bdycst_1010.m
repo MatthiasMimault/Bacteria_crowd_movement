@@ -1,9 +1,5 @@
 %% Main file for Bacterial movement model
-% V1.90 - 10/07 - Implementation of diffusion, adaptation of CFL
-% V1.91 - 26/07 - Fixed quiver symmetry
-% V2.00 - 30/07 - Implemento Stochastic Initial Data
-% V2.10 - 21/08 - Carbon Proximity-based velocity field
-% V2.20 - 26/08 - Constant flow of density at boundary
+% V2.2 - Code restart, flow boundary with advection
 close all
 clear
 
@@ -15,12 +11,12 @@ clear
 T = 200; A = 0.03; C = 0; 
 R = 2; epsilon = 0.5;
 Nfiles = 10; 
-typeTest = 'DEV-BdyDensityCst';
+typeTest = 'DEV-BdyFlow';
 dateTest = '1010';
-runnb = '1-CodeRecover';
+runnb = '1-SimpleAdvection';
 % A standstill, B advection, C adv-obstacles, D attraction, E att-obstacles
 % F Root alone, H root and obstacles, I with exponential decrease velocity
-type = 'F'; 
+type = 'B'; 
 
 % Numerical parameters
 nx = 400;

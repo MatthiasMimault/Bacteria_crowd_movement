@@ -39,11 +39,10 @@ Vmx = [zeros(ny,1),Vx-VbdL];
 
 fpx = Vpx.*f(Upx);
 fmx = Vmx.*f(Umx);
-figure
-contourf(fpx)
-figure
-contourf(fmx)
-pause
+% figure
+% contourf(fpx)
+% figure
+% contourf(fmx)
     
 %% Quantity update
 LF = LxF(fpx,fmx,Upx,Umx);
