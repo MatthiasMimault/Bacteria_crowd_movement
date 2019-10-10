@@ -1,7 +1,7 @@
-function Vy = fDirectionY(b,Vxo,Vyo,Ex,Ey,PhiDef)
+function Vy = fDirectionY(b,Vxo,Vyo,Ex,Ey,PhiDef,epsilon)
 
 %% Parameters
-epsilon = 0.5;
+% epsilon = 0.1;
 
 %% Vx computation
 % Perceived density
@@ -10,8 +10,8 @@ UEy = convolve2(b.*PhiDef,Ey,'same');
 SU = sqrt(1+UEx.^2+UEy.^2);
 
 % Deviation
-Ix = epsilon*UEx./SU;
-Iy = epsilon*UEy./SU;
+Ix = epsilon*UEx./SU.*PhiDef;
+Iy = epsilon*UEy./SU.*PhiDef;
 
 % Vx update
 Vn = sqrt((Vxo+Ix).^2+(Vyo+Iy).^2);

@@ -1,10 +1,7 @@
 %% Main file for Bacterial movement model
-% V1.70 - Attractive root, repulsive region, weno3
-% V1.71 - Tentative automatic file naming aborted, correction of NsaveVect
-% generation (validated mostly, no wrong case found for CFL 0.1-0.8)
-% V1.72 - Correction of behaviour at boundary: Solved, but Velocity
-% orientation troubling
-% V1.8 - Stable method. Problem at vector field generation
+% V1.90 - 10/07 - Implementation of diffusion, adaptation of CFL
+% V1.91 - 26/07 - Fixed quiver symmetry
+% computation
 close all
 clear
 
@@ -13,18 +10,18 @@ clear
 % Obstacles: ro is the size (side) of a square obstacle and
 % Ro the spacing between the center of two obstacles
 % R is the radius of interaction for the perceived density
-T = 10; A = 0.03; B = 1; 
-R = 0.5;
+T = 1000; A = 0.03; C = 0; 
+R = 2; epsilon = 0.5;
 Nfiles = 10; 
-typeTest = 'CLB';
-dateTest = '0507';
-runnb = '3-R05e05';
+typeTest = 'CLB-DensityLow';
+dateTest = '2607';
+runnb = '1-LowDensity01-T1000';
 % A standstill, B advection, C adv-obstacles, D attraction, E att-obstacles
-% F Root alone
+% F Root alone, H root and obstacles
 type = 'H'; 
 
 % Numerical parameters
-nx = 600;
+nx = 3200;
 CFL = 0.9;
 ny = nx;
 
@@ -37,7 +34,8 @@ Attractant = [-1 1 10 20];
 % Attractant = [-20 20 20 25];
 
 % Bacteria
-InitSpace = [-19, 19, -19, -5];
+InitSpace = [-19.25, 19.25, -19.25, -5.25]; % Original
+% InitSpace = [-5, 5, -10, -5];
 InitValue = 0.1;
 
 switch type
@@ -92,7 +90,7 @@ switch type
         return
 end
 nameFolder = [typeTest '-' dateTest];
-nameFile = [type runnb '-' suffix '-' num2str(nx)];
+nameFile = [type runnb '-' suffix];
 
 
 % Serial obstacles: Ro obstacle center spacing, ro obstacle size, re
@@ -109,7 +107,7 @@ Axis = Space;
 % make directory
 mkdir('Results')
 nameFolder = ['Results\' nameFolder];
-folderData = [nameFolder '\Data-' nameFile];
+folderData = [nameFolder '\Data-' nameFile '-' num2str(nx)];
 mkdir(nameFolder)
 mkdir(folderData)
 addpath('..\Toolbox')  
@@ -128,10 +126,10 @@ PhiBd = fBoundaryGeneration(X,Y,PhiAt,Space,Attractant,typeAt,typeObs);
 PhiDef = ones(size(X))-min(1,PhiAt+PhiBd);
 
 % Constants domain
-Dt = min(Dx,Dy)*CFL;
+Dt = min(min(Dx,Dy)/A,Dx*Dx/2/C)*CFL;
 tt = 0:Dt:T;
 TT = 0:T/Nfiles:T;
-Nt = length(tt);
+Nt = length(tt)-1;
 
 
 %% Convolution
@@ -153,20 +151,22 @@ Upy = zeros(size(X)); Umy = zeros(size(X));
 
 switch typeVel
     case 'stand'
-        Vxo = zeros(size(X));
-        Vyo = zeros(size(X));
+        Vxo = zeros(size(X)); Vx = Vxo;
+        Vyo = zeros(size(X)); Vy = Vyo;
     case {'adv','att'}
-        PhiC = fEikonalCost(X,Y,ones(size(X)),PhiBd,PhiAt);
+        PhiC = fEikonalCost(X,Y,ones(size(X)),PhiBd-PhiAt,PhiAt);
         [Vxo,Vyo] = fDiffFlex(PhiC,PhiDef,Dx,Dy);
         Vn = sqrt(Vxo.^2+Vyo.^2+PhiBd+PhiAt);
         Vxo = -Vxo./Vn;
         Vxo(isnan(Vxo)) = 0;
+        Vxo = Vxo.*PhiDef;
         Vyo = -Vyo./Vn;
         Vyo(isnan(Vyo)) = 0;
-        Vxoo = Vxo; Vyoo = Vyo;
+        Vyo = Vyo.*PhiDef;
+        Vx = Vxo; Vy = Vyo;
     otherwise 
-        Vxo = zeros(size(X));
-        Vyo = zeros(size(X));
+        Vxo = zeros(size(X)); Vx = Vxo;
+        Vyo = zeros(size(X)); Vy = Vyo;
 end
 
 
@@ -179,37 +179,46 @@ fprintf(['Start : ' date '\n']);
 B = zeros(1,length(1:Nt));
 
 %% Save initial parameters
-nSaveVec = zeros(size(TT));
-for i=2:length(TT)-1
-   nFind = find(tt-TT(i)>=0 & abs(tt-TT(i))<Dt);
-   nSaveVec(i) = nFind(1);
-end
-nSaveVec(end) = Nt;
-NSave = 1;
-dN = ceil(Nt/Nfiles);
-save([folderData '\' nameFile '-init'],'PhiDef','PhiBd','PhiAt',...
-    'Nt','dN','T','Nfiles', 'Axis', 'nameFolder','nameFile','nx')
-save([folderData '\' nameFile '-000'])
+% nSaveVec = zeros(size(TT));
+itt = 1;
+% for i=2:length(TT)-1
+%    nFind = find(tt-TT(i)>=0 & abs(tt-TT(i))<Dt);
+%    nSaveVec(i) = nFind(1)-1;
+% end
+% nSaveVec(end) = Nt;
+% NSave = 1;
+% dN = ceil(Nt/Nfiles);
+save([folderData '\' nameFile '-' num2str(nx) '-init'],'PhiDef','PhiBd','PhiAt',...
+    'Nt','T','Nfiles', 'Axis', 'nameFolder','nameFile','nx')
+save([folderData '\' nameFile '-' num2str(nx) '-000'])
 
 %% Loop
-for n = 2:Nt
+for n = 1:Nt
+    %% Advection
     % Half step x
     switch typeVel
         case 'att'
-            Vx = fDirectionX(b,Vxo,Vyo,Ex,Ey,PhiDef); 
+            Vx = fDirectionX(b,Vxo,Vyo,Ex,Ey,PhiDef,epsilon); 
         otherwise
             Vx = Vxo;
     end
-    btemp = fUpdateX(b,CFL,Vx, PhiDef, PhiAt, PhiBd);    
+    
+    btemp = fUpdateX2(b,Dt,Dx,A,Vx,PhiDef,PhiAt,PhiBd);  
     
     % Half step y
     switch typeVel
         case 'att'
-            Vy = fDirectionY(b,Vxo,Vyo,Ex,Ey,PhiDef); 
+            Vy = fDirectionY(btemp,Vxo,Vyo,Ex,Ey,PhiDef,epsilon); 
         otherwise
             Vy = Vyo;
     end
-    btemp = fUpdateY(btemp,CFL,Vy, PhiDef, PhiAt, PhiBd);
+    
+    btemp = fUpdateY2(btemp,Dt,Dy,A,Vy, PhiDef, PhiAt, PhiBd);
+    
+    %% Diffusion
+    btemp = fDiffusionX(btemp,Dt,Dx,C,PhiDef,PhiBd); 
+    btemp = fDiffusionY(btemp,Dt,Dy,C,PhiDef,PhiBd); 
+    
     
     %% Total mass update
     % 03/07 - Correction of saving synchronisation
@@ -218,43 +227,52 @@ for n = 2:Nt
 %     max(max(b))
 %     min(min(b))
 %     pause
-   
-    if ismember(n,nSaveVec)
-        DtSave = Dt*(n)-TT(NSave+1);
-        CFLtemp = DtSave/Dx;
+%    
+%     if ismember(n,nSaveVec)
+    if n*Dt>TT(itt+1)
+        DtSave = TT(itt+1)-Dt*(n-1);
+%         CFLtemp = DtSave/Dx;
 %         Dt*(n-1)-DtSave
 %         NSave+1
 
         % Half step x
         switch typeVel
             case 'att'
-                Vx = fDirectionX(b,Vxo,Vyo,Ex,Ey,PhiDef); 
+                Vx = fDirectionX(b,Vxo,Vyo,Ex,Ey,PhiDef,epsilon); 
             otherwise
                 Vx = Vxo;
         end
-        b = fUpdateX(b,CFLtemp,Vx, PhiDef, PhiAt, PhiBd);
+        b = fUpdateX2(b,DtSave,Dx,A,Vx,PhiDef,PhiAt,PhiBd);  
 
         % Half step y
         switch typeVel
             case 'att'
-                Vy = fDirectionY(b,Vxo,Vyo,Ex,Ey,PhiDef); 
+                Vy = fDirectionY(b,Vxo,Vyo,Ex,Ey,PhiDef,epsilon); 
             otherwise
                 Vy = Vyo;
         end
-        b = fUpdateY(b,CFLtemp,Vy, PhiDef, PhiAt, PhiBd);
+        b = fUpdateY2(b,DtSave,Dy,A,Vy, PhiDef, PhiAt, PhiBd);
+        
+        b = fDiffusionX(b,DtSave,Dx,C,PhiDef,PhiBd); 
+        b = fDiffusionY(b,DtSave,Dy,C,PhiDef,PhiBd);
         
         % Save
-        tsave =  Dt*(n-1)-DtSave;
-        s = sprintf('%03s',num2str(NSave,'%d'));
-        save([folderData '\' nameFile '-' s],...
+        tsave =  Dt*(n-1)+DtSave;
+        s = sprintf('%03s',num2str(itt,'%d'));
+        save([folderData '\' nameFile '-' num2str(nx) '-' s],...
             'X','Y','b','Dx','Dy','Vx','Vy','tsave')
-        NSave = NSave + 1;
+%         NSave = NSave + 1;
+        itt = itt + 1;
         
         % Estimation time
         plotTime(toc, n, Nt)
         pause(0.01)
     end
     b = btemp;
+%     plotSurf(X,Y,b,0,0,Axis)
+%     max(max(b))
+%     min(min(b))
+%     pause
 end
 
 
@@ -262,7 +280,7 @@ end
 plotFinalTime();
 Tcomp = toc;
 tt = Dt*(1:Nt);
-save([folderData '\' nameFile '-init'],...
+save([folderData '\' nameFile '-' num2str(nx) '-init'],...
     'B','Tcomp','tt','TT','-append')
 % figure
 % plotTotalMass(Dt*(1:Nt),B);

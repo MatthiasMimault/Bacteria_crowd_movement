@@ -1,4 +1,4 @@
-function b = fUpdateX(b,CFL,Vx,PhiDef,PhiAt,PhiBd)
+function b = fUpdateX2(b,Dt,Dx,A,Vx,PhiDef,PhiAt,PhiBd)
 % CFL, PhiDef, PhiAt should be global
 
 %% Parameters
@@ -10,7 +10,7 @@ ny = s(2); % To be checked with non uniform grid
 % f = @(u) u.*(1-u);
 
 % Linear
-f = @(u) u;
+f = @(u) A*u;
 
 %% Numerical scheme
 % Lax Friedrichs

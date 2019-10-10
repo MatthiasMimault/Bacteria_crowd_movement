@@ -17,8 +17,7 @@ MaxP = sqrt((X2-X1).^2+(Y2-Y1).^2);
 
 %% Boundary conditions
 Phi = MaxP*(ones(size(X)) - PhiAt);
-[Lx,Ly]=size(Phi);
-          
+[Lx,Ly]=size(Phi);          
 
 %While loop on the error of XXX
 % while e>e_thr 
