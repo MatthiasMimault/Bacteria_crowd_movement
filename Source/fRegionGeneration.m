@@ -1,8 +1,9 @@
 function [domAt, domBd, domDef, domSrc] = fRegionGeneration(...
-X, Y, Domain, Space, Attractant, Source)
-global Dx Dy typeAt typeSrc
+X, Y, Space, Attractant, Source)
+global Dx Dy typeAt typeObs typeSrc
 % Define the numerical domain of definition, attractant, boundary and
 % source based on geometric input and a grid X;
+% Pending: obstacle generation
 
 % Attractant region
 domAt = fAttractantGen(X,Y,Dx,Dy,Attractant,typeAt);
@@ -11,9 +12,10 @@ domAt = fAttractantGen(X,Y,Dx,Dy,Attractant,typeAt);
 domSrc = fSourceGen(X,Y,Dx,Dy,Source,typeSrc);
 
 % Boundary region
-domBd = zeros(size(X));
+domBd = fBoundaryGen(X,Y,Dx,Dy,Space,domAt,domSrc, typeObs);
 
-domDef = zeros(size(X));
+% Definition domain
+domDef = 1-domBd;
 end
 
 function domAt = fAttractantGen(X,Y,Dx,Dy,Attractant,typeAt)
@@ -56,6 +58,18 @@ switch typeSrc
 end
 end
 
-function domBd = fBoundaryGen(X,Y,Dx,Dy,Space,domAt,domSrc)
+function domBd = fBoundaryGen(X,Y,Dx,Dy,Space,domAt,domSrc, typeObs)
+% Generate wall boundary, and obstacles. It includes domAt and domSrc
+%% Initialisation with wall boundary
+domBd = (X<Space(1)+Dx/2)+(X>Space(2)-Dx/2)...
+    +(Y<Space(3)+Dy/2).*(X<=Space(2)-Dx/2).*(X>=Space(1)+Dx/2)...
+    +(Y>Space(4)-Dy/2).*(X<=Space(2)-Dx/2).*(X>=Space(1)+Dx/2);
+
+%% Inclusion of Attractant and Source
+domBd = max(max(domAt,domSrc),domBd);
+% Required: find a test of Attractant-Space-Source connectivity
+
+%% Obstacle generation
+% Required on V3.1
 
 end
