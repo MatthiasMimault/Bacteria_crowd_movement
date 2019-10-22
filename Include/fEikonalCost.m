@@ -17,7 +17,7 @@ MaxP = sqrt((X2-X1).^2+(Y2-Y1).^2);
 
 %% Boundary conditions
 Phi = MaxP*(ones(size(X)) - PhiAt);
-[Lx,Ly]=size(Phi);          
+[Lx,Ly]=size(Phi);  
 
 %While loop on the error of XXX
 % while e>e_thr 
@@ -49,6 +49,8 @@ for iter = 1:iter_MAX
         end
     end
     
+    
+    
     %Second loop
     for i = Lx-1:-1:2               
         for j = 2:Ly-1
@@ -76,6 +78,7 @@ for iter = 1:iter_MAX
         end
     end
     
+    
     %Third loop
     for i = Lx-1:-1:2                
         for j = Ly-1:-1:2
@@ -102,6 +105,7 @@ for iter = 1:iter_MAX
             Phi(i,j) = min(Phibar,Phi(i,j)).*(1-PhiBd(i,j)>0)+MaxP.*PhiBd(i,j); 
         end
     end
+    
     
     %Fourth loop
     for i = 2:Lx-1                

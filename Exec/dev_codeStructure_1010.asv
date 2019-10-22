@@ -1,7 +1,6 @@
 %% Executable script for Bacteria Movement model
 % V3.0 - New structure
-% Current: density update
-% Pending: convolution generation, save operation, velocity update
+% Pending: convolution grid generation
 close all
 clear
 
@@ -17,14 +16,13 @@ global Dx Dy typeAt typeInit typeSrc typeObs typeVel A C epsilon
 % Physical parameters
 % T is time in s, A is bacteria average velocity, C is diffusion coeff.
 % R is /// mm, epsilon is interaction strength
-T = 100; A = 0.03; C = 0; 
+T = 200; A = 0.03; C = 0; 
 R = 2; epsilon = 0.5;
 BactValue = 0.5;
 typeAt = 'up';
 typeSrc = 'bottom';
 typeObs = 'none';
-% typeVel = 'static';
-typeVel = 'att-src';
+typeVel = 'att-adv';
 typeInit = 'none';
 
 % Run parameters
@@ -40,8 +38,8 @@ ny = nx;
 Domain = [-25, 25, -25, 25];
 Space = [-20, 20, -20, 20];
 Attractant = [-20 20 20 25];
-InitBact = [-20, 10, -10, 10]; 
-Source = [-20 20 -22 -20]; 
+InitBact = [-19.25, 19.25, -19.25, -5.25]; 
+Source = [-20 20 -25 -20]; 
 
 % Folders
 addpath('..\Data')
@@ -71,11 +69,12 @@ mkdir(pngFolder)
 
 [domAt, domBd, domDef, domSrc] ...
     = fRegionGeneration(X, Y, Space, Attractant, Source);
+% contourf(domAt+2*domBd+3*domSrc+7*domDef)
+% colorbar
 
 Dt = min(min(Dx,Dy)/A,Dx*Dx/2/C)*CFL
 tt = 0:Dt:T;
 TT = 0:T/Nfiles:T;
-tsave = 0;
 Nt = length(tt)-1;
 B = zeros(1,length(1:Nt));
 itt = 1;
@@ -88,7 +87,7 @@ b = fDensityGeneration(X,Y,BactValue,InitBact);
 % >>> Required generation convolution grid
 
 % Generation velocity field
-[Vxo, Vyo] = fVelocityGeneration(X, Y, domAt, domBd, domSrc);
+[Vxo, Vyo] = fVelocityGeneration(X, Y, domAt, domBd, domDef);
 Vx = Vxo;
 Vy = Vyo;
 
@@ -99,8 +98,7 @@ Axis = Space;
 save([dataFolder '\' caseType runnb '-init'],'domDef','domBd',...
     'domAt', 'domSrc',...
     'Nt','T','Nfiles', 'Axis', 'caseName','dataFolder','nx')
-save([dataFolder '\' caseType runnb '-000'],...
-     'X','Y','b','Dx','Dy','Vx','Vy','tsave')
+save([dataFolder '\' caseType runnb '-000'])
 
 % Estimation time - start timer
 tic
@@ -108,18 +106,16 @@ date = datestr(datetime('now','TimeZone','local','Format','d-MMM-y HH:mm:ss Z'))
 fprintf(['Start : ' date '\n']);
 
 %% 2. Loop
+% >>> Required loop
 for n = 1:Nt    
     %% Update
     % Velocity update
-    % >>> Required velocity upadte
 %     [Vx,Vy] = fVelocityUpdate(Vxo,Vyo,Ex,Ey,domBd);
+    Vx = Vxo;
+    Vy = Vyo;
     
     % Density update
-    % >>> Required density update (DFX,DFY,Source)
     b_final = fDensityUpdate(Dt,b,Vx,Vy,domBd,domSrc);
-    
-    % Total mass update
-    B(n) = sum(sum(Dx*Dy*b));
     
     %% Save
     if n*Dt>=TT(itt+1)
@@ -127,13 +123,9 @@ for n = 1:Nt
         tsave =  Dt*(n-1)+Dt_save;
         
         b_save = fDensityUpdate(Dt_save,b,Vx,Vy,domBd,domSrc);
-        plotSurf(X,Y,b_save,Vx,Vy,Axis)
-%         min(min(b_final))
-        % >>> Required save operation    
-        s = sprintf('%03s',num2str(itt,'%d'));
-        save([dataFolder '\' caseType runnb '-' s],...
-            'X','Y','b','Dx','Dy','Vx','Vy','tsave')
-        %       save( 'X','Y','b','Dx','Dy','Vx','Vy','tsave'
+        contourf(b_save)
+%         b_save = fUpdate(Dt_save,b,ZONE);
+%       save( 'X','Y','b','Dx','Dy','Vx','Vy','tsave'
 
         % Clean-up
         plotTime(toc, n, Nt)
