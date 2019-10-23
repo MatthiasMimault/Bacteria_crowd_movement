@@ -12,10 +12,10 @@ b = fAdvectionY(Dt,b,Vy,Bdy,Src);
 %% Diffusion + source
 % >>> Requires diffusion
 % x direction
-% b = fDiffusionX();
+b = fDiffusionX(Dt,b,Bdy,Src);
 
 % y direction
-% b = fDiffusionY();
+b = fDiffusionY(Dt,b,Bdy,Src);
 
 
 end
@@ -27,7 +27,12 @@ global Dx A
 %% Parameters
 s = size(b);
 ny = s(2); % To be checked with non uniform grid
-Def = 1-Bdy+Src;
+% Def = 1-Bdy+Src;
+Bdy = Bdy-Src;
+Def = 1-Bdy-Src;
+SrcValue = 0.5;
+
+b = b+SrcValue*Src;
 
 %% Flux
 % % % Hughes
@@ -72,7 +77,7 @@ b = b - Dt/Dx*(LF(:,2:end)-LF(:,1:end-1));
 % Dirichlet 0 + flux limiter at exit
 % b = b.*Def+PhiAt.*min(b,0.2*ones(size(b)));
 % Dirichlet 0
-% b = b.*Def;
+b = b.*Def;
 end
 
 function b = fAdvectionY(Dt,b,Vy,Bdy,Src)
@@ -81,7 +86,12 @@ global A Dy
 %% Parameters
 s = size(b);
 nx = s(1); % To be checked with non uniform grid
-Def = 1-Bdy+Src;
+% Def = 1-Bdy+Src;
+Bdy = Bdy-Src;
+Def = 1-Bdy-Src;
+SrcValue = 0.5;
+
+b = b+SrcValue*Src;
 
 %% Flux
 % % Hughes
@@ -131,9 +141,47 @@ b = b - Dt/Dy*(LG(2:end,:)-LG(1:end-1,:));
 % Dirichlet 0 + flux limiter at exit
 % b = b.*Def+PhiAt.*min(b,0.2*ones(size(b)));
 % Dirichlet 0
-% b = b.*Def;
+b = b.*Def;
 end
 
+function b = fDiffusionX(Dt,b,Bdy,Src)
+global Dx C
+
+%% Parameters
+s = size(b);
+ny = s(2);
+Bdy = Bdy-Src;
+Def = 1-Bdy-Src;
+SrcValue = 0.5;
+
+b = b+SrcValue*Src;
+
+%% Neumann boundary
+bp = [zeros(ny,1) b(:,1:end-1)].*Bdy+b;
+bm = [b(:,2:end) zeros(ny,1)].*Bdy+b;
+
+b = b+Dt/Dx/Dx*C*(bm-2*b+bp);
+b = b.*Def;
+end
+
+function b = fDiffusionY(Dt,b,Bdy,Src)
+%% Parameters
+global Dy C
+s = size(b);
+nx = s(1);
+Bdy = Bdy-Src;
+Def = 1-Bdy-Src;
+SrcValue = 0.5;
+
+b = b+SrcValue*Src;
+
+%% Neumann boundary
+bu = [zeros(1,nx);b(1:end-1,:)].*Bdy+b;
+bd = [b(2:end,:);zeros(1,nx)].*Bdy+b;
+
+b = b+Dt/Dy/Dy*C*(bd-2*b+bu);
+b = b.*Def;
+end
 
 
 

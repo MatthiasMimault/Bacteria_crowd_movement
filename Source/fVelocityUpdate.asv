@@ -1,0 +1,44 @@
+function [Vx, Vy] = fVelocityUpdate(Vxo,Vyo,Ex,Ey,Bdy)
+%fVelocityUpdate updates the vecto field V with the density estimation
+%around the bacteria (attraction)
+
+global typeVel
+
+switch typeVel
+    case {'att', 'att-src'}
+        [Vx, Vy] = fDeviation(b,Vxo,Vyo,Ex,Ey,Bdy);
+    
+    otherwise
+        Vx = Vxo;
+        Vy = Vyo;
+end
+end
+
+function [Vx, Vy] = fDeviation(b,Vxo,Vyo,Ex,Ey,Bdy)
+%% Parameters
+global epsilon
+Def = 1-Bdy;
+
+%% Vx computation
+% Perceived density
+UEx = convolve2(b.*Def,Ex,'same');
+UEy = convolve2(b.*Def,Ey,'same');
+SU = sqrt(1+UEx.^2+UEy.^2);
+
+% Deviation
+Ix = epsilon*UEx./SU.*Def;
+Iy = epsilon*UEy./SU.*Def;
+
+% Vx update
+Vn = sqrt((Vxo+Ix).^2+(Vyo+Iy).^2);
+
+Vx = (Vxo+Ix)./Vn;
+Vy = (Vyo+Iy)./Vn;
+Vx(isnan(Vx)) = 0;
+% Vx(isnan(Vy)) = 0;
+Vx = Vx.*Def;
+
+% Vy(isnan(Vx)) = 0;
+Vy(isnan(Vy)) = 0;
+Vy = Vy.*Def;
+end

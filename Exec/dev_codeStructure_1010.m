@@ -1,7 +1,7 @@
 %% Executable script for Bacteria Movement model
 % V3.0 - New structure
-% Current: density update
-% Pending: convolution generation, save operation, velocity update
+% Current: 
+% Pending: obstacle generation
 close all
 clear
 
@@ -12,7 +12,7 @@ caseType = 'A';
 caseDate = '1010';
 runnb = '1';
 suffix = 'SimpleAdvection';
-global Dx Dy typeAt typeInit typeSrc typeObs typeVel A C epsilon
+global R Dx Dy typeAt typeInit typeSrc typeObs typeVel A C epsilon
 
 % Physical parameters
 % T is time in s, A is bacteria average velocity, C is diffusion coeff.
@@ -20,11 +20,10 @@ global Dx Dy typeAt typeInit typeSrc typeObs typeVel A C epsilon
 T = 100; A = 0.03; C = 0; 
 R = 2; epsilon = 0.5;
 BactValue = 0.5;
-typeAt = 'up';
+typeAt = 'root'; %up, root
 typeSrc = 'bottom';
 typeObs = 'none';
-% typeVel = 'static';
-typeVel = 'att-src';
+typeVel = 'att-src'; % static, att-src
 typeInit = 'none';
 
 % Run parameters
@@ -39,8 +38,8 @@ ny = nx;
 % Dimensions
 Domain = [-25, 25, -25, 25];
 Space = [-20, 20, -20, 20];
-Attractant = [-20 20 20 25];
-InitBact = [-20, 10, -10, 10]; 
+Attractant = [-1 1 10 25]; %[-20 20 20 25] [-1 1 10 25]
+InitBact = [-20, 20, -20, -10]; %[-20, 10, -10, 10]
 Source = [-20 20 -22 -20]; 
 
 % Folders
@@ -72,7 +71,8 @@ mkdir(pngFolder)
 [domAt, domBd, domDef, domSrc] ...
     = fRegionGeneration(X, Y, Space, Attractant, Source);
 
-Dt = min(min(Dx,Dy)/A,Dx*Dx/2/C)*CFL
+Dt = min(min(Dx,Dy)/A,Dx*Dx/2/C)*CFL;
+disp(['Time step is ' num2str(Dt)]);
 tt = 0:Dt:T;
 TT = 0:T/Nfiles:T;
 tsave = 0;
@@ -85,7 +85,7 @@ itt = 1;
 b = fDensityGeneration(X,Y,BactValue,InitBact);
 
 % Generation convolution
-% >>> Required generation convolution grid
+[E,Ex,Ey] = fConvKernelGeneration();
 
 % Generation velocity field
 [Vxo, Vyo] = fVelocityGeneration(X, Y, domAt, domBd, domSrc);
@@ -111,11 +111,9 @@ fprintf(['Start : ' date '\n']);
 for n = 1:Nt    
     %% Update
     % Velocity update
-    % >>> Required velocity upadte
-%     [Vx,Vy] = fVelocityUpdate(Vxo,Vyo,Ex,Ey,domBd);
+    [Vx,Vy] = fVelocityUpdate(b,Vxo,Vyo,Ex,Ey,domBd);
     
     % Density update
-    % >>> Required density update (DFX,DFY,Source)
     b_final = fDensityUpdate(Dt,b,Vx,Vy,domBd,domSrc);
     
     % Total mass update
@@ -128,12 +126,10 @@ for n = 1:Nt
         
         b_save = fDensityUpdate(Dt_save,b,Vx,Vy,domBd,domSrc);
         plotSurf(X,Y,b_save,Vx,Vy,Axis)
-%         min(min(b_final))
-        % >>> Required save operation    
+        
         s = sprintf('%03s',num2str(itt,'%d'));
         save([dataFolder '\' caseType runnb '-' s],...
             'X','Y','b','Dx','Dy','Vx','Vy','tsave')
-        %       save( 'X','Y','b','Dx','Dy','Vx','Vy','tsave'
 
         % Clean-up
         plotTime(toc, n, Nt)
