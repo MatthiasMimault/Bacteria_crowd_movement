@@ -14,8 +14,10 @@ switch typeInit
         v = sigma*randn(s)+mu;     
         b = v.*(X>dom(1)).*(X<dom(2)).*(Y>dom(3)).*(Y<dom(4));
         b = b.*(b>0).*(b<1);
-    otherwise 
+    case 'square'
         b = value*(X>dom(1)).*(X<dom(2)).*(Y>dom(3)).*(Y<dom(4));
+    otherwise 
+        b = zeros(size(X));
 end
 end
 

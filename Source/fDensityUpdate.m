@@ -81,7 +81,7 @@ b = b.*Def;
 end
 
 function b = fAdvectionY(Dt,b,Vy,Bdy,Src)
-global A Dy
+global A Dy BactValue
 
 %% Parameters
 s = size(b);
@@ -89,9 +89,9 @@ nx = s(1); % To be checked with non uniform grid
 % Def = 1-Bdy+Src;
 Bdy = Bdy-Src;
 Def = 1-Bdy-Src;
-SrcValue = 0.5;
+% SrcValue = 0.5;
 
-b = b+SrcValue*Src;
+b = b+BactValue*Src;
 
 %% Flux
 % % Hughes
@@ -145,16 +145,16 @@ b = b.*Def;
 end
 
 function b = fDiffusionX(Dt,b,Bdy,Src)
-global Dx C
+global Dx C BactValue
 
 %% Parameters
 s = size(b);
 ny = s(2);
 Bdy = Bdy-Src;
 Def = 1-Bdy-Src;
-SrcValue = 0.5;
+% SrcValue = 0.5;
 
-b = b+SrcValue*Src;
+b = b+BactValue*Src;
 
 %% Neumann boundary
 bp = [zeros(ny,1) b(:,1:end-1)].*Bdy+b;

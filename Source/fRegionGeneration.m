@@ -12,7 +12,7 @@ domAt = fAttractantGen(X,Y,Dx,Dy,Attractant,typeAt);
 domSrc = fSourceGen(X,Y,Dx,Dy,Source,typeSrc);
 
 % Boundary region
-domBd = fBoundaryGen(X,Y,Dx,Dy,Space,domAt,domSrc, typeObs);
+domBd = fBoundaryGen(X,Y,Dx,Dy,Space,Attractant,domAt,domSrc, typeObs);
 
 % Definition domain
 domDef = 1-domBd;
@@ -58,7 +58,7 @@ switch typeSrc
 end
 end
 
-function domBd = fBoundaryGen(X,Y,Dx,Dy,Space,domAt,domSrc, typeObs)
+function domBd = fBoundaryGen(X,Y,Dx,Dy,Space,Attractant,domAt,domSrc, typeObs)
 % Generate wall boundary, and obstacles. It includes domAt and domSrc
 %% Initialisation with wall boundary
 domBd = (X<Space(1)+Dx/2)+(X>Space(2)-Dx/2)...
@@ -71,5 +71,23 @@ domBd = max(max(domAt,domSrc),domBd);
 
 %% Obstacle generation
 % Required on V3.1
+if strcmp(typeObs,'particles')
+    Ro = 10; ro = 4;
+    Obstacle = fObstacleGeneration(Space,Attractant,Ro,ro);
+    s = size(Obstacle);
+    No = s(1);
+    for n = 1:No
+    %     R = sqrt(Obstacle(n,2)-Obstacle(n,1)-Dx);
+        R = 0.5*(Obstacle(n,2)-Obstacle(n,1));
+        Xo = Obstacle(n,1)+R/2;
+        Yo = Obstacle(n,3)+R/2;
+    %     [Xo-R^2, Xo+R^2, Yo-R^2, Yo+R^2]
+        if ((Xo-2*sqrt(R))>Space(1) && (Xo+2*sqrt(R))<Space(2)...
+                && (Yo-2*sqrt(R))>Space(3)&& (Yo+2*sqrt(R))<Space(4))
+            domBd = domBd...
+            +ones(size(X)).*(((X-Xo).^2+(Y-Yo).^2)<=R^2);
+        end
+    end
+end
 
 end

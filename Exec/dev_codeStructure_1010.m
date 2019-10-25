@@ -9,25 +9,25 @@ clear
 % Names
 caseName = 'DEV-BdyFlow';
 caseType = 'A';
-caseDate = '1010';
-runnb = '1';
-suffix = 'SimpleAdvection';
-global R Dx Dy typeAt typeInit typeSrc typeObs typeVel A C epsilon
+caseDate = '1025';
+runnb = '2x';
+suffix = 'HomogObstaDiff-T1000B01C001';
+global R Dx Dy typeAt typeInit typeSrc typeObs typeVel A C epsilon BactValue
 
 % Physical parameters
 % T is time in s, A is bacteria average velocity, C is diffusion coeff.
 % R is /// mm, epsilon is interaction strength
-T = 100; A = 0.03; C = 0; 
+T = 1000; A = 0.03; C = 0.01; 
 R = 2; epsilon = 0.5;
-BactValue = 0.5;
+BactValue = 0.1;
 typeAt = 'root'; %up, root
 typeSrc = 'bottom';
-typeObs = 'none';
+typeObs = 'particles'; % none
 typeVel = 'att-src'; % static, att-src
-typeInit = 'none';
+typeInit = 'square'; % none square
 
 % Run parameters
-debug = 'true';
+debug = 'false'; % true false
 Nfiles = 10; 
 
 % Numerical parameters
@@ -39,7 +39,7 @@ ny = nx;
 Domain = [-25, 25, -25, 25];
 Space = [-20, 20, -20, 20];
 Attractant = [-1 1 10 25]; %[-20 20 20 25] [-1 1 10 25]
-InitBact = [-20, 20, -20, -10]; %[-20, 10, -10, 10]
+InitBact = [-20, 20, -20, 20]; %[-20, 10, -10, 10]
 Source = [-20 20 -22 -20]; 
 
 % Folders
@@ -51,15 +51,17 @@ if strcmp(debug, 'true')
     addpath('..\Debug')
 end
 
+cd ..
+
 if strcmp(debug, 'true') 
 %     dataFolder = ['..\Debug\' caseDate '-' caseType runnb '-' num2str(nx)];
-    dataFolder = ['..\Debug\' caseName '\' caseDate '-' caseType runnb ...
+    dataFolder = ['\Debug\' caseName '\' caseDate '-' caseType runnb ...
         '-' num2str(nx) '-' suffix];
 else
-    dataFolder = ['..\Data\' caseDate '-' caseType runnb '-' num2str(nx)];
+    dataFolder = ['\Data\' caseDate '-' caseType runnb '-' num2str(nx)];
 end
-figureFolder = ['..\Figures\F' caseDate '-' caseType runnb '-' num2str(nx)];
-pngFolder =    ['..\Figures\P' caseDate '-' caseType runnb '-' num2str(nx)];
+figureFolder = ['\Figures\F' caseDate '-' caseType runnb '-' num2str(nx)];
+pngFolder =    ['\Figures\P' caseDate '-' caseType runnb '-' num2str(nx)];
 
 mkdir(dataFolder)
 mkdir(figureFolder)
