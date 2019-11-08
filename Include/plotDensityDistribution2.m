@@ -7,10 +7,10 @@ load([nameFolder '\' nameFile '-init'],...
     'Axis', 'Nfiles','domBd');
 
 if strcmp(type,'png')
-    folderPngs = [nameFolder '\Pngs-' nameFile '-' num2str(nx)];
+    folderPngs = ['Figures\P' caseDate '-' caseType runnb '-' num2str(nx)];
     mkdir(folderPngs)
 else
-    folderFigs = [nameFolder '\Figs-' nameFile '-' num2str(nx)];
+    folderFigs = ['Figures\P' caseDate '-' caseType runnb '-' num2str(nx)];
     mkdir(folderFigs)
 end
 
