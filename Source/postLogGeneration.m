@@ -9,7 +9,7 @@ global T R nx CFL typeAt typeInit typeSrc typeObs typeVel A C epsilon...
 % Domain = [0 0 0 0]; Space = [0 0 0 0]; Attractant = [0 0 0 0]; 
 % Source = [0 0 0 0]; InitBact = [0 0 0 0];
 
-fileID = fopen([path '-' caseName '-logs.txt'],'w');
+fileID = fopen([path caseName '-logs.txt'],'w');
 fprintf(fileID, 'Parameters\n');
 fprintf(fileID, ['ID Test: ' caseName '\n']);
 fprintf(fileID, 'T: %d (s, Maximal time)\n', T);

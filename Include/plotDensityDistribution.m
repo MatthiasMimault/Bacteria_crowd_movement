@@ -1,16 +1,17 @@
 %% Plot function
-function plotDensityDistribution(nameFolder,nameFile,nx,type)
+% If released, remove pD and pD2
+function plotDensityDistribution(nameFolder,caseDate,nameFile,nx,type)
 close all
 % Initialisation
-folderData = [nameFolder '\Data-' nameFile '-' num2str(nx)];
-load([folderData '\' nameFile '-' num2str(nx) '-init'],...
-    'Axis', 'Nfiles','PhiBd');
+% nameFolder = [nameFolder '\'];
+load([nameFolder '\' nameFile '-init'],...
+    'Axis', 'Nfiles','domBd');
 
 if strcmp(type,'png')
-    folderPngs = ['Figures\P' caseDate '-' caseType runnb '-' num2str(nx)];
+    folderPngs = ['Figures\P' caseDate '-' nameFile '-' num2str(nx)];
     mkdir(folderPngs)
 else
-    folderFigs = ['Figures\F' caseDate '-' caseType runnb '-' num2str(nx)];
+    folderFigs = ['Figures\P' caseDate '-' nameFile '-' num2str(nx)];
     mkdir(folderFigs)
 end
 
@@ -23,14 +24,14 @@ fprintf(['Start : ' date '\n']);
 for n = 0:Nfiles-1 
     % Load
     s = sprintf('%03s',num2str(n,'%d'));
-    load([folderData '\' nameFile '-' num2str(nx) '-' s],...
+    load([nameFolder '\' nameFile '-' s],...
         'X','Y','b','Vx','Vy')
     % Plot  
     plotSurf(X,Y,b,Vx,Vy,Axis)     
     
     % Plot boundary
     hold on
-    plotBd(X,Y,PhiBd,Axis)
+    plotBd(X,Y,domBd,Axis)
     hold off
     
     % Save

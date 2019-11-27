@@ -2,9 +2,7 @@ function [dataRoot, dataFolder, figureFolder, pngFolder] = fFolderMaker(...
     caseName, caseDate, caseType, runnb, nx, suffix)
 global debug
 addpath('..\Data')
-addpath('..\Include')
 addpath('..\Figures')
-addpath('..\Source')
 if strcmp(debug, 'true') 
     addpath('..\Debug')
 end

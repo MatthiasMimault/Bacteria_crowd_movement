@@ -1,25 +1,26 @@
 %% Executable script for Bacteria Movement model
 % V3.0 - New structure, bacteria max density: 400 cells per mm^2
+% V3.1 - New folder structure for figures
 % Current: 
-% Pending: 
+% Pending: Automated case generation, progress bar, plot to post
 close all
 clear
 
 %% 0. Settings
 % Names
-caseName = 'RUN-RootObstacles';
+caseName = 'DEV-LogGen';
 caseType = 'A';
-caseDate = '1106';
-runnb = '4';
-suffix = 'Flaming-T1000B10C002';
-global R Dx Dy typeAt typeInit typeSrc typeObs typeVel A C epsilon...
+caseDate = '1108';
+runnb = '1';
+suffix = '';
+global T R Dx Dy nx CFL typeAt typeInit typeSrc typeObs typeVel A C epsilon...
     BactValue debug
 
 % Physical parameters
 % T is time in s, A is bacteria average velocity, C is diffusion coeff.
-% R is /// mm, epsilon is interaction strength
-T = 1000; A = 0.03; C = 0.02; 
-R = 2; epsilon = 0.5;
+% R is interaction radius in mm, epsilon is interaction strength
+T = 0.2; A = 0.03; C = 0.01; 
+R = 2; epsilon = 1;
 BactValue = 10;
 typeAt = 'root'; %up, root
 typeSrc = 'bottom';
@@ -28,8 +29,9 @@ typeVel = 'att-src'; % static, att-src
 typeInit = 'square'; % none square
 
 % Run parameters
-debug = 'false'; % true false
-Nfiles = 10; 
+debug = 'true'; % true false
+Nfiles = 2; 
+typeRepulsion = 0;
 
 % Numerical parameters
 nx = 800;
@@ -43,42 +45,13 @@ Attractant = [-1 1 10 25]; %[-20 20 20 25] [-1 1 10 25]
 InitBact = [-20, 20, -20, 20]; %[-20, 10, -10, 10]
 Source = [-20 20 -22 -20]; 
 
-[dataRoot, dataFolder, figureFolder, pngFolder] = fFolderMaker( ...
+% Directories
+addpath('..\Include')
+addpath('..\Source')
+% [dataRoot, dataFolder, figureFolder, pngFolder] = fFolderMaker( ...
+%     caseName, caseDate, caseType, runnb, nx, suffix);
+[dataRoot, dataFolder, figureFolder, pngFolder] = fFolderMaker2( ...
     caseName, caseDate, caseType, runnb, nx, suffix);
-
-% Folders
-% addpath('..\Data')
-% addpath('..\Include')
-% addpath('..\Figures')
-% addpath('..\Source')
-% if strcmp(debug, 'true') 
-%     addpath('..\Debug')
-% end
-% 
-% cd ..
-% 
-% if strcmp(debug, 'true') 
-% %     dataFolder = ['..\Debug\' caseDate '-' caseType runnb '-' num2str(nx)];
-%     dataRoot = ['Debug\' caseName];
-% else
-%     dataRoot = ['Data\' caseName];
-% end
-% mkdir(dataRoot)
-% 
-% if strcmp(debug, 'true') 
-% %     dataFolder = ['..\Debug\' caseDate '-' caseType runnb '-' num2str(nx)];
-%     dataFolder = ['Debug\' caseName '\' caseDate '-' caseType runnb ...
-%         '-' num2str(nx) '-' suffix];
-% else
-%     dataFolder = ['Data\' caseName '\' caseDate '-' caseType runnb ...
-%         '-' num2str(nx) '-' suffix];
-% end
-% figureFolder = ['Figures\F' caseDate '-' caseType runnb '-' num2str(nx)];
-% pngFolder =    ['Figures\P' caseDate '-' caseType runnb '-' num2str(nx)];
-% 
-% mkdir(dataFolder)
-% mkdir(figureFolder)
-% mkdir(pngFolder)
 
 %% 1. Initialisation grid and dependant parameters
 [X,Y,Dx,Dy] = fGridGeneration(nx,ny,Domain);
@@ -126,7 +99,12 @@ fprintf(['Start : ' date '\n']);
 for n = 1:Nt    
     %% Update
     % Velocity update
-    [Vx,Vy] = fVelocityUpdate(b,Vxo,Vyo,Ex,Ey,domBd);
+    if n*Dt>500
+        typeRepulsion = 1;
+    end
+    [Vx,Vy] = fRootFieldUpdate(Vxo,Vyo,typeRepulsion);
+    [Vx,Vy] = fVelocityUpdate(b,Vx,Vy,Ex,Ey,domBd);
+%     [Vx,Vy] = fVelocityUpdate(b,Vxo,Vyo,Ex,Ey,domBd);
     
     % Density update
     b_final = fDensityUpdate(Dt,b,Vx,Vy,domBd,domSrc);
@@ -163,4 +141,6 @@ Tcomp = toc;
 tt = Dt*(1:Nt);
 save([dataFolder '\' caseType runnb '-init'],...
     'B','Tcomp','tt','TT','-append')
+postLogGeneration([dataFolder '\' caseType runnb], caseName,...
+    Domain, Space, Attractant, Source, InitBact)
 

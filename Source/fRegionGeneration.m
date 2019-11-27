@@ -72,7 +72,8 @@ domBd = max(max(domAt,domSrc),domBd);
 %% Obstacle generation
 % Required on V3.1
 if strcmp(typeObs,'particles')
-    Ro = 10; ro = 4;
+    % Ro length between two consecutive centres, ro radius obstacle
+    Ro = 8; ro = 4;
     Obstacle = fObstacleGeneration(Space,Attractant,Ro,ro);
     s = size(Obstacle);
     No = s(1);
