@@ -1,17 +1,17 @@
 %% Plot function
 % If released, remove pD and pD2
-function plotDensityDistribution(nameFolder,caseDate,nameFile,nx,type)
+function plotDensityDistribution(dataRoot,caseName,fileName,nx,type)
 close all
 % Initialisation
 % nameFolder = [nameFolder '\'];
-load([nameFolder '\' nameFile '-init'],...
+load([dataRoot '\Data-' caseName '\' fileName '-init'],...
     'Axis', 'Nfiles','domBd');
 
 if strcmp(type,'png')
-    folderPngs = ['Figures\P' caseDate '-' nameFile '-' num2str(nx)];
+    folderPngs = [dataRoot '\Png-' caseName '-' fileName '-' num2str(nx)];
     mkdir(folderPngs)
 else
-    folderFigs = ['Figures\P' caseDate '-' nameFile '-' num2str(nx)];
+    folderFigs = [dataRoot '\Fig-' caseName '-' fileName '-' num2str(nx)];
     mkdir(folderFigs)
 end
 
@@ -24,7 +24,7 @@ fprintf(['Start : ' date '\n']);
 for n = 0:Nfiles-1 
     % Load
     s = sprintf('%03s',num2str(n,'%d'));
-    load([nameFolder '\' nameFile '-' s],...
+    load([dataRoot '\Data-' caseName '\' fileName '-' s],...
         'X','Y','b','Vx','Vy')
     % Plot  
     plotSurf(X,Y,b,Vx,Vy,Axis)     
@@ -36,9 +36,9 @@ for n = 0:Nfiles-1
     
     % Save
     if strcmp(type,'png')
-        print([folderPngs '\' nameFile '-' num2str(nx) '-' s],'-dpng')
+        print([folderPngs '\' fileName '-' num2str(nx) '-' s],'-dpng')
     else
-        savefig([folderFigs '\' nameFile '-' num2str(nx) '-' s '.fig'])
+        savefig([folderFigs '\' fileName '-' num2str(nx) '-' s '.fig'])
     end
 %     
     % print([nameFig 'Png_' s],'-dpng')

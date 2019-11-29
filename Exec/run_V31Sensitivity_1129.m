@@ -8,33 +8,33 @@ clear
 
 %% 0. Settings
 % Names
-caseTitle = 'TST-DulDupuy';
-caseDate = '1127';
-caseType = 'B';
-runnb = '3';
-suffix = 'R05-C002B20-fix';
+caseTitle = 'SNS-DulDupuy';
+caseDate = '1129';
+caseType = 'A';
+runnb = '1';
+suffix = 'e0C0-B20-NoObstacles';
 global T R Dx Dy nx CFL typeAt typeInit typeSrc typeObs typeVel A C epsilon...
     BactValue debug
 
 % Physical parameters
 % T is time in s, A is bacteria average velocity, C is diffusion coeff.
 % R is interaction radius in mm, epsilon is interaction strength
-T = 500; A = 0.03; C = 0.02; 
-R = 0.5; epsilon = 1;
+T = 500; A = 0.03; C = 0; 
+R = 0.5; epsilon = 0;
 BactValue = 20;
 typeAt = 'root'; %up, root
 typeSrc = 'bottom';
-typeObs = 'particles'; % none
-typeVel = 'att-src'; % static, att-src
+typeObs = 'none'; % none, particles
+typeVel = 'adv-src'; % static, att-src, none, adv-src
 typeInit = 'square'; % none square
 
 % Run parameters
 debug = 'false'; % true false
-Nfiles = 50; 
+Nfiles = 10; 
 typeRepulsion = 0;
 
 % Numerical parameters
-nx = 1600;
+nx = 400;
 CFL = 0.9;
 ny = nx;
 
@@ -42,7 +42,7 @@ ny = nx;
 Domain = [-25, 25, -25, 25];
 Space = [-20, 20, -20, 20];
 Attractant = [-1 1 10 25]; %[-20 20 20 25] [-1 1 10 25]
-InitBact = [-20, 20, -20, 20]; %[-20, 10, -10, 10]
+InitBact = [-20, 20, -20, 10]; %[-20, 10, -10, 10]
 Source = [-20 20 -22 -20]; 
 
 % Directories

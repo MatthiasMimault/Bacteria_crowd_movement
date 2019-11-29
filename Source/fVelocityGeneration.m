@@ -12,7 +12,7 @@ switch typeVel
     case 'adv-right'
         Vxo = ones(size(X));
         Vyo = zeros(size(X));
-    case 'att-src'
+    case {'adv-src', 'att-src'}
         Distance = fEikonalCost(X,Y,ones(size(X)),domBd-domAt-domSrc,domAt);
         [Vxo,Vyo] = fDiffFlex(Distance,domDef,Dx,Dy);
         Vn = sqrt(Vxo.^2+Vyo.^2+1-domDef);
