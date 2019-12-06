@@ -9,23 +9,23 @@ clear
 %% 0. Settings
 % Names
 caseTitle = 'SNS-DulDupuy';
-caseDate = '1129';
-caseType = 'A';
+caseDate = '1205';
+caseType = 'E';
 runnb = '1';
-suffix = 'e0C0-B20-NoObstacles';
+suffix = 'e05C0R05-B20T250-NoObstacles';
 global T R Dx Dy nx CFL typeAt typeInit typeSrc typeObs typeVel A C epsilon...
     BactValue debug
 
 % Physical parameters
 % T is time in s, A is bacteria average velocity, C is diffusion coeff.
 % R is interaction radius in mm, epsilon is interaction strength
-T = 500; A = 0.03; C = 0; 
-R = 0.5; epsilon = 0;
+T = 250; A = 0.03; C = 0; 
+R = 0.5; epsilon = 0.5;
 BactValue = 20;
 typeAt = 'root'; %up, root
 typeSrc = 'bottom';
 typeObs = 'none'; % none, particles
-typeVel = 'adv-src'; % static, att-src, none, adv-src
+typeVel = 'att-src'; % static, att-src, none, adv-src
 typeInit = 'square'; % none square
 
 % Run parameters
@@ -34,7 +34,7 @@ Nfiles = 10;
 typeRepulsion = 0;
 
 % Numerical parameters
-nx = 400;
+nx = 3200;
 CFL = 0.9;
 ny = nx;
 
