@@ -1,5 +1,5 @@
 %% Executable script for Bacteria Movement model
-% V3.0 - New structure, bacteria max density: 400 cells per mm^2
+% V3.0 - New structure, bacteria max density: 200 cells per mm^2
 % V3.1 - New folder structure for figures: ready for sensitivity analysis
 % Current: 
 % Pending: Automated case generation, progress bar, plot to post
@@ -8,23 +8,26 @@ clear
 
 %% 0. Settings
 % Names
-caseTitle = 'SNS-DulDupuy';
-caseDate = '1205';
-caseType = 'E';
-runnb = '1';
-suffix = 'e05C0R05-B20T250-NoObstacles';
+caseTitle = 'SNS-DulD-Diffusion';
+caseDate = '1210';
+caseType = 'A';
+runnb = '2';
+suffix = 'T1000C0001-e05R05-Po65';
 global T R Dx Dy nx CFL typeAt typeInit typeSrc typeObs typeVel A C epsilon...
-    BactValue debug
+    BactValue debug Ro ro
 
 % Physical parameters
 % T is time in s, A is bacteria average velocity, C is diffusion coeff.
 % R is interaction radius in mm, epsilon is interaction strength
-T = 250; A = 0.03; C = 0; 
+T = 1000; A = 0.03; C = 0.001; 
 R = 0.5; epsilon = 0.5;
 BactValue = 20;
+% particles - porosity 65%
+Ro = 1.6; ro = 1;
+
 typeAt = 'root'; %up, root
 typeSrc = 'bottom';
-typeObs = 'none'; % none, particles
+typeObs = 'particles'; % none, particles
 typeVel = 'att-src'; % static, att-src, none, adv-src
 typeInit = 'square'; % none square
 
@@ -34,7 +37,7 @@ Nfiles = 10;
 typeRepulsion = 0;
 
 % Numerical parameters
-nx = 3200;
+nx = 1600;
 CFL = 0.9;
 ny = nx;
 
@@ -72,7 +75,7 @@ itt = 1;
 
 % Generation density
 % >>> Define a check that InitBact is strictly included in Space
-b = fDensityGeneration(X,Y,BactValue,InitBact);
+b = fDensityGeneration(X,Y,BactValue,InitBact).*domDef;
 
 % Generation convolution
 [E,Ex,Ey] = fConvKernelGeneration();

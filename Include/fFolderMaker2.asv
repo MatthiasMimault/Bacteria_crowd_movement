@@ -14,18 +14,16 @@ end
 cd ..
 
 if strcmp(debug, 'true') 
+    if exist('..\Debug', 'dir') == 0
+        mkdir('..\Debug')
+    end
     dataRoot = ['Debug\' caseTitle];
 else
     dataRoot = ['Cases\' caseTitle];
 end
-if exist(dataRoot, 'dir') == 0
-    mkdir(dataRoot)
-end
-
+mkdir(dataRoot)
 
 caseName = [caseDate '-' caseType runnb '-' num2str(nx) '-' suffix];
 fileName = [caseType runnb];
 dataFolder = [dataRoot '\Data-' caseName];
-if exist(dataFolder, 'dir') == 0
-    mkdir(dataFolder)
-end
+mkdir(dataFolder)

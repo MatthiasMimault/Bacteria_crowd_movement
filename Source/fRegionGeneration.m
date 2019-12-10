@@ -1,6 +1,6 @@
 function [domAt, domBd, domDef, domSrc] = fRegionGeneration(...
 X, Y, Space, Attractant, Source)
-global Dx Dy typeAt typeObs typeSrc
+global Dx Dy typeAt typeObs typeSrc 
 % Define the numerical domain of definition, attractant, boundary and
 % source based on geometric input and a grid X;
 % Pending: obstacle generation
@@ -60,6 +60,7 @@ end
 
 function domBd = fBoundaryGen(X,Y,Dx,Dy,Space,Attractant,domAt,domSrc, typeObs)
 % Generate wall boundary, and obstacles. It includes domAt and domSrc
+global Ro ro
 %% Initialisation with wall boundary
 domBd = (X<Space(1)+Dx/2)+(X>Space(2)-Dx/2)...
     +(Y<Space(3)+Dy/2).*(X<=Space(2)-Dx/2).*(X>=Space(1)+Dx/2)...
@@ -73,7 +74,7 @@ domBd = max(max(domAt,domSrc),domBd);
 % Required on V3.1
 if strcmp(typeObs,'particles')
     % Ro length between two consecutive centres, ro radius obstacle
-    Ro = 8; ro = 4;
+%     Ro = 8; ro = 4;
     Obstacle = fObstacleGeneration(Space,Attractant,Ro,ro);
     s = size(Obstacle);
     No = s(1);

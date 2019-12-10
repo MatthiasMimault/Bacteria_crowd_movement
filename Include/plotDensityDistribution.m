@@ -1,6 +1,7 @@
 %% Plot function
 % If released, remove pD and pD2
 function plotDensityDistribution(dataRoot,caseName,fileName,nx,type)
+warning('off','MATLAB:contour:ConstantData')
 close all
 % Initialisation
 % nameFolder = [nameFolder '\'];
@@ -9,10 +10,16 @@ load([dataRoot '\Data-' caseName '\' fileName '-init'],...
 
 if strcmp(type,'png')
     folderPngs = [dataRoot '\Png-' caseName '-' fileName '-' num2str(nx)];
-    mkdir(folderPngs)
+    if exist(folderPngs, 'dir') == 0
+        mkdir(folderPngs)
+    end
+    
 else
     folderFigs = [dataRoot '\Fig-' caseName '-' fileName '-' num2str(nx)];
-    mkdir(folderFigs)
+    
+    if exist(folderFigs, 'dir') == 0
+        mkdir(folderFigs)
+    end
 end
 
 
