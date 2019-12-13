@@ -11,8 +11,8 @@ clear
 caseTitle = 'SNS-DulD-Diffusion';
 caseDate = '1210';
 caseType = 'A';
-runnb = '2';
-suffix = 'T1000C0001-e05R05-Po65';
+runnb = '3';
+suffix = 'T1000C0001-e05R05-Po65-HighRes';
 global T R Dx Dy nx CFL typeAt typeInit typeSrc typeObs typeVel A C epsilon...
     BactValue debug Ro ro
 
@@ -37,7 +37,7 @@ Nfiles = 10;
 typeRepulsion = 0;
 
 % Numerical parameters
-nx = 1600;
+nx = 3200;
 CFL = 0.9;
 ny = nx;
 
