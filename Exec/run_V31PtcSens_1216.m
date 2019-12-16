@@ -11,8 +11,8 @@ clear
 caseTitle = 'SNS-Ptc65';
 caseDate = '1216';
 caseType = 'A';
-runnb = '1';
-suffix = 'T100C0-e0R05-Po65-RescaleDomain';
+runnb = '3';
+suffix = 'T100C0-e0R05-Po65-Dev2';
 global T R Dx Dy nx CFL typeAt typeInit typeSrc typeObs typeVel A C epsilon...
     BactValue debug Ro ro
 
@@ -42,11 +42,11 @@ CFL = 0.9;
 ny = nx;
 
 % Dimensions
-Domain = [-6, 6, -6, 6];
-Space = [-5, 5, -5, 5];
+Domain = [-4.25, 4.5, -2.2, 6];
+Space = [-3.25, 3.5, -1.2, 5];
 Attractant = [-0.2 0.2 4 6]; %[-20 20 20 25] [-1 1 10 25]
-InitBact = [-5, 5, -8, 5]; %[-20, 10, -10, 10]
-Source = [-5 5 -6 -5]; 
+InitBact = [-3.25, 3.5, -1.2, 5]; %[-20, 10, -10, 10]
+Source = [-3.25, 3.5 -2.2 -1.2]; 
 
 % Directories
 addpath('..\Include')

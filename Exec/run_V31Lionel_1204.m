@@ -1,5 +1,5 @@
 %% Executable script for Bacteria Movement model
-% V3.0 - New structure, bacteria max density: 200 cells per mm^2
+% V3.0 - New structure, bacteria max density: 400 cells per mm^2
 % V3.1 - New folder structure for figures: ready for sensitivity analysis
 % Current: 
 % Pending: Automated case generation, progress bar, plot to post
@@ -8,27 +8,24 @@ clear
 
 %% 0. Settings
 % Names
-caseTitle = 'CAL-PtcSize';
-caseDate = '1213';
+caseTitle = 'ANI-Dresden';
+caseDate = '1204';
 caseType = 'A';
-runnb = '1';
-suffix = 'T1000C0001-e05R05-Po65-HighRes';
+runnb = '3';
+suffix = 'e1C0R05-B20-Ptcs';
 global T R Dx Dy nx CFL typeAt typeInit typeSrc typeObs typeVel A C epsilon...
-    BactValue debug Ro ro
+    BactValue debug
 
 % Physical parameters
 % T is time in s, A is bacteria average velocity, C is diffusion coeff.
 % R is interaction radius in mm, epsilon is interaction strength
-T = 100; A = 0.03; C = 0.001; 
-R = 0.5; epsilon = 0.5;
+T = 500; A = 0.03; C = 0.001; 
+R = 0.5; epsilon = 1;
 BactValue = 20;
-% particles - porosity 65%
-Ro = 1.18; ro = 1;
-
 typeAt = 'root'; %up, root
 typeSrc = 'bottom';
 typeObs = 'particles'; % none, particles
-typeVel = 'att-src'; % static, att-src, none, adv-src
+typeVel = 'adv-src'; % static, att-src, none, adv-src
 typeInit = 'square'; % none square
 
 % Run parameters
@@ -37,14 +34,14 @@ Nfiles = 10;
 typeRepulsion = 0;
 
 % Numerical parameters
-nx = 400;
+nx = 1200;
 CFL = 0.9;
 ny = nx;
 
 % Dimensions
 Domain = [-12, 12, -12, 12];
 Space = [-10, 10, -10, 10];
-Attractant = [-0.2 0.2 5 15]; %[-20 20 20 25] [-1 1 10 25]
+Attractant = [-0.2 0.2 8 15]; %[-20 20 20 25] [-1 1 10 25]
 InitBact = [-10, 10, -10, 10]; %[-20, 10, -10, 10]
 Source = [-10 10 -12 -10]; 
 
