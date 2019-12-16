@@ -8,19 +8,19 @@ clear
 
 %% 0. Settings
 % Names
-caseTitle = 'SNS-Ptc65';
+caseTitle = 'SNS-wParticles';
 caseDate = '1216';
 caseType = 'A';
-runnb = '3';
-suffix = 'T100C0-e0R05-Po65-Dev2';
+runnb = '1';
+suffix = 'T500R05-e01C0';
 global T R Dx Dy nx CFL typeAt typeInit typeSrc typeObs typeVel A C epsilon...
     BactValue debug Ro ro
 
 % Physical parameters
 % T is time in s, A is bacteria average velocity, C is diffusion coeff.
 % R is interaction radius in mm, epsilon is interaction strength
-T = 100; A = 0.03; C = 0; 
-R = 0.5; epsilon = 0;
+T = 500; A = 0.03; C = 0; 
+R = 0.5; epsilon = 0.1;
 BactValue = 20;
 % particles - porosity 65%
 Ro = 1.18; ro = 1;
@@ -33,7 +33,7 @@ typeInit = 'square'; % none square
 
 % Run parameters
 debug = 'false'; % true false
-Nfiles = 2; 
+Nfiles = 10; 
 typeRepulsion = 0;
 
 % Numerical parameters
