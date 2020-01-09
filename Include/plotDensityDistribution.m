@@ -34,7 +34,7 @@ for n = 0:Nfiles-1
     load([dataRoot '\Data-' caseName '\' fileName '-' s],...
         'X','Y','b','Vx','Vy')
     % Plot  
-    plotSurf(X,Y,b,Vx,Vy,Axis)     
+    plotSurf2(X,Y,b,Vx,Vy,Axis)     
     
     % Plot boundary
     hold on
