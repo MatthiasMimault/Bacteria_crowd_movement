@@ -5,6 +5,8 @@ function [Vx, Vy] = fVelocityUpdate(b,Vxo,Vyo,Ex,Ey,Bdy)
 global typeVel
 
 switch typeVel
+    case 'att2'
+        [Vx, Vy] = fDeviation_dev(b,Vxo,Vyo,Ex,Ey,Bdy);
     case {'att', 'att-src'}
         [Vx, Vy] = fDeviation(b,Vxo,Vyo,Ex,Ey,Bdy);
     
@@ -45,5 +47,28 @@ Vx = Vx.*Def;
 
 Vy(nanVx) = 0;
 Vy(nanVy) = 0;
+Vy = Vy.*Def;
+end
+
+function [Vx, Vy] = fDeviation_dev(b,Vxo,Vyo,Ex,Ey,Bdy)
+%% Parameters
+global epsilon
+Def = 1-Bdy;
+
+%% Vx computation
+% Perceived density
+UEx = convolve2(b.*Def,Ex,'same');
+UEy = convolve2(b.*Def,Ey,'same');
+SU = sqrt(1+UEx.^2+UEy.^2);
+
+% Deviation
+Ix = epsilon*UEx./SU.*Def;
+Iy = epsilon*UEy./SU.*Def;
+
+% V update
+Vx = Vxo+Ix;
+Vy = Vyo+Iy;
+
+Vx = Vx.*Def;
 Vy = Vy.*Def;
 end

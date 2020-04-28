@@ -11,12 +11,11 @@ if strcmp(debug, 'true')
     end
 end
 
-cd ..
 
 if strcmp(debug, 'true') 
-    dataRoot = ['Debug\' caseTitle];
+    dataRoot = ['..\Debug\' caseTitle];
 else
-    dataRoot = ['Cases\' caseTitle];
+    dataRoot = ['..\Cases\' caseTitle];
 end
 if exist(dataRoot, 'dir') == 0
     mkdir(dataRoot)

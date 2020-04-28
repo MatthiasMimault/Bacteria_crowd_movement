@@ -6,6 +6,14 @@ global Dx Dy typeVel
 domDef = 1-domBd+domSrc;
 
 switch typeVel
+    case 'leftright0'
+        Vxo = (X<0)-(X>0);
+        Vyo = zeros(size(X));
+    case 'centred'
+        Vxo = -X./sqrt(X.^2+Y.^2);
+        Vxo(isnan(Vxo)) = 0;
+        Vyo = -Y./sqrt(X.^2+Y.^2);
+        Vyo(isnan(Vyo)) = 0;
     case 'adv-up'
         Vxo = zeros(size(X));
         Vyo = ones(size(X));
@@ -22,7 +30,7 @@ switch typeVel
         Vyo = -Vyo./Vn;
         Vyo(isnan(Vyo)) = 0;
         Vyo = Vyo.*(domDef);
-    case {'att','att-adv'}
+    case {'att','att-adv', 'att2'}
         PhiC = fEikonalCost(X,Y,ones(size(X)),domBd-domAt,domAt);
         [Vxo,Vyo] = fDiffFlex(PhiC,domDef,Dx,Dy);
         Vn = sqrt(Vxo.^2+Vyo.^2+domBd+domAt);
