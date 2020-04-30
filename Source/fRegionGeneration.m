@@ -79,31 +79,34 @@ switch typeObs
     Obstacle = fObstacleGeneration(Space,Attractant,Ro,ro);
     s = size(Obstacle);
     No = s(1);
-    dev = 2;
+    
     for n = 1:No
     %     R = sqrt(Obstacle(n,2)-Obstacle(n,1)-Dx);
         R = 0.5*(Obstacle(n,2)-Obstacle(n,1));
         Xo = Obstacle(n,1)+Ro/2;
         Yo = Obstacle(n,3)+Ro/2;
         
-        switch dev
-            case 0
-                if ((Xo-2*sqrt(R))>Space(1) && (Xo+2*sqrt(R))<Space(2)...
-                        && (Yo-2*sqrt(R))>Space(3)&& (Yo+2*sqrt(R))<Space(4))
-                    domBd = domBd...
-                    +ones(size(X)).*(((X-Xo).^2+(Y-Yo).^2)<=R^2);
-                end
-            case 1
-                if (Obstacle(n,1)-(Ro-ro)>Space(1) && Obstacle(n,2)+(Ro-ro)<Space(2)...
-                        && Obstacle(n,3)-(Ro-ro)>Space(3)&& Obstacle(n,4)+(Ro-ro)<Space(4))
-                    domBd = domBd...
-                    +ones(size(X)).*(((X-Xo).^2+(Y-Yo).^2)<=R^2);
-                end
-            case 2
-                domBd = domBd...
-                    +ones(size(X)).*(((X-Xo).^2+(Y-Yo).^2)<=R^2);
-                
-        end
+        domBd = domBd+ones(size(X)).*(((X-Xo).^2+(Y-Yo).^2)<=R^2);
+        
+%         stale
+%         switch dev
+%             case 0
+%                 if ((Xo-2*sqrt(R))>Space(1) && (Xo+2*sqrt(R))<Space(2)...
+%                         && (Yo-2*sqrt(R))>Space(3)&& (Yo+2*sqrt(R))<Space(4))
+%                     domBd = domBd...
+%                     +ones(size(X)).*(((X-Xo).^2+(Y-Yo).^2)<=R^2);
+%                 end
+%             case 1
+%                 if (Obstacle(n,1)-(Ro-ro)>Space(1) && Obstacle(n,2)+(Ro-ro)<Space(2)...
+%                         && Obstacle(n,3)-(Ro-ro)>Space(3)&& Obstacle(n,4)+(Ro-ro)<Space(4))
+%                     domBd = domBd...
+%                     +ones(size(X)).*(((X-Xo).^2+(Y-Yo).^2)<=R^2);
+%                 end
+%             case 2
+%                 domBd = domBd...
+%                     +ones(size(X)).*(((X-Xo).^2+(Y-Yo).^2)<=R^2);
+%                 
+%         end
     end
 end
 end

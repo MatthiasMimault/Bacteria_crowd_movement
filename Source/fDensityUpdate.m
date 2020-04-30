@@ -1,28 +1,37 @@
 function b = fDensityUpdate(Dt,b,Vx,Vy,Bdy,Src)
 %FUPDATE updates the value of density b over a time step Dt with advection
 %V, source Src and diffusion
-typeDim = '2D';
+global dev
 
-switch typeDim
-    case '1D'
-        b = fAdvectionX_dev(Dt,b,Vx,Bdy,Src);
-%         b = fDiffusionX_dev(Dt,b,Bdy,Src);
-    case '2D'
-        b = fAdvectionX_dev(Dt,b,Vx,Bdy,Src);
-        b = fAdvectionY_dev(Dt,b,Vy,Bdy,Src);
-    otherwise
+typeDim = '2D';
+% typeDim = 'none';
+
+switch dev
+    case 'stale'
         % Advection diffusion source
         % x direction
-        b = fAdvectionX(Dt,b,Vx,Bdy,Src);
-        b = fDiffusionX(Dt,b,Bdy,Src);
+        b = fAdvectionX_stale(Dt,b,Vx,Bdy,Src);
+        b = fDiffusionX_stale(Dt,b,Bdy,Src);
 
         % y direction
-        b = fAdvectionY(Dt,b,Vy,Bdy,Src);
-        b = fDiffusionY(Dt,b,Bdy,Src);
-end
+        b = fAdvectionY_stale(Dt,b,Vy,Bdy,Src);
+        b = fDiffusionY_stale(Dt,b,Bdy,Src);
+    case 'dev'
+        switch typeDim
+            case '1D'
+                b = fAdvectionX_dev(Dt,b,Vx,Bdy,Src);
+        %         b = fDiffusionX_dev(Dt,b,Bdy,Src);
+            case '2D'
+                b = fAdvectionX_dev(Dt,b,Vx,Bdy,Src);
+                b = fAdvectionY_dev(Dt,b,Vy,Bdy,Src);
+        end
+    otherwise
+        b = fAdvectionX_dev(Dt,b,Vx,Bdy,Src);
+        b = fAdvectionY_dev(Dt,b,Vy,Bdy,Src);
+end       
 end
 
-function b = fAdvectionX(Dt,b,Vx,Bdy,Src)
+function b = fAdvectionX_stale(Dt,b,Vx,Bdy,Src)
 % CFL, Def, PhiAt should be global
 global Dx A 
 
@@ -82,7 +91,7 @@ b = b - Dt/Dx*(LF(:,2:end)-LF(:,1:end-1));
 b = b.*Def;
 end
 
-function b = fAdvectionY(Dt,b,Vy,Bdy,Src)
+function b = fAdvectionY_stale(Dt,b,Vy,Bdy,Src)
 global A Dy BactValue
 
 %% Parameters
@@ -146,7 +155,7 @@ b = b - Dt/Dy*(LG(2:end,:)-LG(1:end-1,:));
 b = b.*Def;
 end
 
-function b = fDiffusionX(Dt,b,Bdy,Src)
+function b = fDiffusionX_stale(Dt,b,Bdy,Src)
 global Dx C BactValue
 
 %% Parameters
@@ -166,7 +175,7 @@ b = b+Dt*C/Dx/Dx*(bm-2*b+bp);
 b = b.*Def;
 end
 
-function b = fDiffusionY(Dt,b,Bdy,Src)
+function b = fDiffusionY_stale(Dt,b,Bdy,Src)
 %% Parameters
 global Dy C
 s = size(b);
@@ -187,16 +196,16 @@ end
 
 function b = fAdvectionX_dev(Dt,b,Vx,Bdy,Src)
 % CFL, Def, PhiAt should be global
-global Dx A C CFL
+global Dx A C BactValue
 
 %% Parameters
 s = size(b);
 ny = s(2); % To be checked with non uniform grid
 Bdy = Bdy-Src;
 Def = 1-Bdy-Src;
-SrcValue = 0.5;
+% SrcValue = 0.5;
 
-b = b+SrcValue*Src;
+b = b+BactValue*Src;
 
 %% Flux
 % % % Hughes
@@ -207,16 +216,10 @@ f = @(u) A*u;
 
 %% Numerical scheme
 % Lax Friedrichs
-% LxF = @(fp,fm,up,um) 0.5*(fp+fm-Dx/Dt*(up-um));
 LxF =  @(fp,fm,up,um) 0.5*(fp+fm);
+% LxFr = @(fp,fm,up,um) 0.5*(fp+fm-A*(up-um));
 
 %% Boundary condition
-% Dirichlet 0
-% Upx = [b,zeros(ny,1)];
-% Umx = [zeros(ny,1),b];
-% fpx = [-Vx,zeros(ny,1)].*f(Upx);
-% fmx = [zeros(ny,1),-Vx].*f(Umx);
-
 % Neumann 0 - Replicate
 BdyL = [Bdy(:,1:end-1).*Def(:,2:end),zeros(ny,1)];
 BdyR = [zeros(ny,1),Bdy(:,2:end).*Def(:,1:end-1)];
@@ -236,10 +239,10 @@ fmx = Vmx.*f(Umx);
     
 %% Quantity update
 LF = LxF(fpx,fmx,Upx,Umx);
-% b = b - Dt/Dx*(LF(:,2:end)-LF(:,1:end-1));
+DF = Upx-Umx;
+
 b = b - Dt/Dx*(LF(:,2:end)-LF(:,1:end-1))...
-    +0.5*max(A*Dt/Dx,2*C*Dt/Dx/Dx)*CFL...
-    *([b(:,2:end) b(:,end)]-2*b+[b(:,1) b(:,1:end-1)]);
+    +0.5*Dt*max(A/Dx,2*C/Dx/Dx)*(DF(:,2:end)-DF(:,1:end-1));
 
 %% Boundary conditions 2
 % Dirichlet 0 + flux limiter at exit
@@ -250,13 +253,14 @@ end
 
 function b = fAdvectionY_dev(Dt,b,Vy,Bdy,Src)
 % CFL, Def, PhiAt should be global
-global Dy A C CFL
+global Dx A C  BactValue
 
 %% Parameters
 s = size(b);
 nx = s(1); % 
 Bdy = Bdy-Src;
 Def = 1-Bdy-Src;
+b = b+BactValue*Src;
 
 %% Flux
 % % Hughes
@@ -289,9 +293,10 @@ fmy = Vmy.*f(Umy);
     
 %% Quantity update
 LG = LxG(fpy,fmy,Upy,Umy);
-b = b - Dt/Dy*(LG(2:end,:)-LG(1:end-1,:))...
-    +0.5*max(A*Dt/Dy,2*C*Dt/Dy/Dy)*CFL...
-    *([b(2:end,:); b(end,:)]-2*b+[b(1,:); b(1:end-1,:)]);
+DG = Upy-Umy;
+
+b = b - Dt/Dx*(LG(2:end,:)-LG(1:end-1,:))...
+    +0.5*Dt*max(A/Dx,2*C/Dx/Dx)*(DG(2:end,:)-DG(1:end-1,:));
 
 %% Boundary conditions 2
 % Dirichlet 0

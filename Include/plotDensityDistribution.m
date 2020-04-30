@@ -1,6 +1,6 @@
 %% Plot function
 % If released, remove pD and pD2
-function plotDensityDistribution(dataRoot,caseName,fileName,nx,type)
+function plotDensityDistribution(dataRoot,caseName,fileName,nx,type,scale)
 warning('off','MATLAB:contour:ConstantData')
 close all
 % Initialisation
@@ -34,7 +34,7 @@ for n = 0:Nfiles-1
     load([dataRoot '\Data-' caseName '\' fileName '-' s],...
         'X','Y','b','Vx','Vy')
     % Plot  
-    plotSurf2(X,Y,b,Vx,Vy,Axis)     
+    plotSurf(X,Y,b,Vx,Vy,Axis, scale)     
     
     % Plot boundary
     hold on
