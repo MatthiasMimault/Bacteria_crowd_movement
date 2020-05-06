@@ -1,4 +1,4 @@
-function [Vxo, Vyo] = fVelocityGeneration(X, Y, domAt, domBd, domSrc)
+function [Vxo, Vyo, PhiC] = fVelocityGeneration_dbg(X, Y, domAt, domBd, domSrc)
 %FVELOCITYGENERATION  generates a quiver vector field based on the domains
 %of definition, the grid and type
 global Dx typeVel

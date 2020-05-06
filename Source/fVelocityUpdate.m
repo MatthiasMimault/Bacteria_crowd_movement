@@ -18,7 +18,7 @@ end
 
 function [Vx, Vy] = fDeviation(b,Vxo,Vyo,Ex,Ey,Bdy)
 %% Parameters
-global epsilon
+global kappa
 Def = 1-Bdy;
 
 %% Vx computation
@@ -28,8 +28,8 @@ UEy = convolve2(b.*Def,Ey,'same');
 SU = sqrt(1+UEx.^2+UEy.^2);
 
 % Deviation
-Ix = epsilon*UEx./SU.*Def;
-Iy = epsilon*UEy./SU.*Def;
+Ix = kappa*UEx./SU.*Def;
+Iy = kappa*UEy./SU.*Def;
 
 % V update
 Vn = sqrt((Vxo+Ix).^2+(Vyo+Iy).^2);
@@ -52,7 +52,7 @@ end
 
 function [Vx, Vy] = fDeviation_dev(b,Vxo,Vyo,Ex,Ey,Bdy)
 %% Parameters
-global epsilon
+global kappa
 Def = 1-Bdy;
 
 %% Vx computation
@@ -62,8 +62,8 @@ UEy = convolve2(b.*Def,Ey,'same');
 SU = sqrt(1+UEx.^2+UEy.^2);
 
 % Deviation
-Ix = epsilon*UEx./SU.*Def;
-Iy = epsilon*UEy./SU.*Def;
+Ix = kappa*UEx./SU.*Def;
+Iy = kappa*UEy./SU.*Def;
 
 % V update
 Vx = Vxo+Ix;

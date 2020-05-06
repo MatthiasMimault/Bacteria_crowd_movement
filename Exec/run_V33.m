@@ -10,10 +10,10 @@ clear
 
 %% 0. Settings
 % Names
-caseTitle = 'DBG-BdOscill';
-caseDate = '3004';
+caseTitle = 'DAT-NbFilaments';
+caseDate = '0501';
 runnb = '2a';
-suffix = 'ValidT500';
+suffix = 'T100-LongerDomain';
 global T R Dx Dy nx CFL typeAt typeInit typeSrc typeObs typeVel A C epsilon...
     BactValue dev Ro ro
 
@@ -21,7 +21,7 @@ global T R Dx Dy nx CFL typeAt typeInit typeSrc typeObs typeVel A C epsilon...
 % T is time in s, A is bacteria average velocity in mm.s-1, C is diffusion 
 % coeff in mm.s-2, R is interaction radius in mm, epsilon is interaction 
 % strength, BactValue is in millions of bacteria per mL
-T = 10; A = 0.03; C = 0.001; 
+T = 100; A = 0.03; C = 0.001; 
 R = 0.5; epsilon = 0.1;
 BactValue = 20;
 % particles - porosity 65%
@@ -30,11 +30,10 @@ Ro = 1.18; ro = 1;
 % Run parameters
 dev = 'release'; % stale, dev, release
 typeCase = 'custom';
-Nfiles = 5; 
-typeRepulsion = 0;
+Nfiles = 10; 
 
 % Numerical parameters
-nx = 400;
+nx = 800;
 CFL = 1;
 ny = nx;
 
@@ -72,16 +71,16 @@ switch typeCase
         % User customisation here
         typeAt = 'root'; %up, root
         typeSrc = 'bottom'; %bottom, none
-        typeObs = 'particles'; % none, particles
+        typeObs = 'none'; % none, particles
         typeVel = 'att'; % static, att, att2, att-src, none, adv-src
         typeInit = 'square'; % none square
         
         % Dimensions
-        Domain = [-4.25, 4.5, -2.2, 6];
-        Space = [-3.25, 3.5, -1.2, 5];
+        Domain = [-4.25, 4.5, -10.2, 6];
+        Space = [-3.25, 3.5, -9.2, 5];
         Attractant = [-0.2 0.2 4 6]; %[-20 20 20 25] [-1 1 10 25]
-        InitBact = [-3, 3, -1, 3]; %[-20, 10, -10, 10]
-        Source = [-3.25, 3.5 -2.2 -1.2];
+        InitBact = [-3.25, 3.5, -9.2, 5];
+        Source = [-3.25, 3.5 -10.2 -9.2];
     otherwise
         % User customisation here
         typeAt = 'root'; %up, root
@@ -99,6 +98,7 @@ switch typeCase
 end
 
 %% Nothing to be modified below
+typeRepulsion = 0;
 
 % Directories
 addpath('..\Include')

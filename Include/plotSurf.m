@@ -19,7 +19,7 @@ function plotSurf(X,Y,P,Vx,Vy,Axis, scale)
     axis normal
     axis equal
     colorbar
-    colormap(jet)
+%     colormap(parula)
     caxis([Pmin Pmax])
 %     set(gca,'colorscale','log')
 end

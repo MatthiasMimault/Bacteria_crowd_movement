@@ -196,11 +196,11 @@ end
 
 function b = fAdvectionX_dev(Dt,b,Vx,Bdy,Src)
 % CFL, Def, PhiAt should be global
-global Dx A C BactValue
+global Dx A D BactValue
 
 %% Parameters
 s = size(b);
-ny = s(2); % To be checked with non uniform grid
+ny = s(1); % To be checked with non uniform grid
 Bdy = Bdy-Src;
 Def = 1-Bdy-Src;
 % SrcValue = 0.5;
@@ -242,7 +242,7 @@ LF = LxF(fpx,fmx,Upx,Umx);
 DF = Upx-Umx;
 
 b = b - Dt/Dx*(LF(:,2:end)-LF(:,1:end-1))...
-    +0.5*Dt*max(A/Dx,2*C/Dx/Dx)*(DF(:,2:end)-DF(:,1:end-1));
+    +0.5*Dt*max(A/Dx,2*D/Dx/Dx)*(DF(:,2:end)-DF(:,1:end-1));
 
 %% Boundary conditions 2
 % Dirichlet 0 + flux limiter at exit
@@ -253,11 +253,11 @@ end
 
 function b = fAdvectionY_dev(Dt,b,Vy,Bdy,Src)
 % CFL, Def, PhiAt should be global
-global Dx A C  BactValue
+global Dx A D BactValue
 
 %% Parameters
 s = size(b);
-nx = s(1); % 
+nx = s(2); % 
 Bdy = Bdy-Src;
 Def = 1-Bdy-Src;
 b = b+BactValue*Src;
@@ -296,7 +296,7 @@ LG = LxG(fpy,fmy,Upy,Umy);
 DG = Upy-Umy;
 
 b = b - Dt/Dx*(LG(2:end,:)-LG(1:end-1,:))...
-    +0.5*Dt*max(A/Dx,2*C/Dx/Dx)*(DG(2:end,:)-DG(1:end-1,:));
+    +0.5*Dt*max(A/Dx,2*D/Dx/Dx)*(DG(2:end,:)-DG(1:end-1,:));
 
 %% Boundary conditions 2
 % Dirichlet 0

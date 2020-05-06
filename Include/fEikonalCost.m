@@ -3,7 +3,7 @@ function [Phi] = fEikonalCost(X,Y,C,PhiBd,PhiAt)
 % Solve the eikonal equation with the fast sweeping method with a cost C
 
 %% Parameters
-iter_MAX = 5;  
+iter_MAX = 20;  
 
 %% Variable
 X1 = min(min(X));

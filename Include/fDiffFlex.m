@@ -49,10 +49,5 @@ Vb_y = (V-[V(1,:);V(1:end-1,:)])/dy;
 
 Vx = Vc_x.*(C-Bx-Fx)+Vf_x.*Fx+Vb_x.*Bx;
 Vy = Vc_y.*(C-By-Fy)+Vf_y.*Fy+Vb_y.*By;
-
-% figure
-% contourf(Vx)
-% figure
-% contourf(Vy)
 % figure
 % quiver(Vx./(abs(Vx)+abs(Vy)),Vy./(abs(Vx)+abs(Vy)))
