@@ -6,8 +6,8 @@ global T R nx CFL typeAt typeInit typeSrc typeObs typeVel A D kappa...
 % T is time in hours, A is bacteria average velocity in mm.h-1, D is diffusion 
 % coeff in mm.h-2, R is interaction radius in mm, kappa is interaction 
 % strength (0-1), BactValue is in millions of bacteria per mL
-T = 5; A = 0.2; D = 0; 
-R = 0.5; kappa = 0;
+T = 5; A = 0.2; D = 0.01; 
+R = 0.5; kappa = 0.05;
 BactValue = 10;
 
 % Numerics

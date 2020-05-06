@@ -1,4 +1,4 @@
-function [X,Y,Dx,Dy] = fGridGeneration(nx,ny, Domain)
+function [X,Y,Dx,Dy] = fGridGeneration(nx,Domain)
 %fGridGeneration: Generate a grid [X,Y], definition regions for PhiBd,
 %PhiAt for a Space in a Domain
 % V1.1: Obstacle generation implemented
@@ -6,8 +6,8 @@ function [X,Y,Dx,Dy] = fGridGeneration(nx,ny, Domain)
 
 % Cells grid
 Dx = (Domain(2)-Domain(1))/nx;
-Dy = (Domain(4)-Domain(3))/ny;
 xx = linspace(Domain(1)+Dx/2,Domain(2)-Dx/2,nx);
+Dy = Dx; ny = ceil((Domain(4)-Domain(3))/Dy);
 yy = linspace(Domain(3)+Dy/2,Domain(4)-Dy/2,ny);
 [X,Y] = meshgrid(xx,yy);
 

@@ -12,9 +12,9 @@ BactValue = 10;
 
 % Numerics
 nx = 200;
-Nfiles = 10; 
+Nfiles = 20; 
 CFL = 1;
-dev = 'release'; % stale, dev, release
+dev = 'dev'; % stale, dev, release
 
 % Domain
 % particles - porosity 65%
