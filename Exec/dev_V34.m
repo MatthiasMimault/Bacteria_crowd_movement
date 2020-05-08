@@ -10,14 +10,14 @@ clear
 
 %% 0. Settings
 % Names
-caseTitle = 'RUN-SimpleCase';
-caseDate = '0506';
-runnb = '7';
-suffix = 'T5-k005D001';
+caseTitle = 'DEV-MultiSource';
+caseDate = '0508';
+runnb = '3';
+suffix = 'T5-Final';
 global T Dx Dy nx CFL A D BactValue 
 
 % input file
-input_V33
+input_V34
 
 %% Nothing to be modified below
 typeRepulsion = 0;

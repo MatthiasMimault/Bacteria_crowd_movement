@@ -201,11 +201,11 @@ global Dx A D BactValue
 %% Parameters
 s = size(b);
 ny = s(1); % To be checked with non uniform grid
-Bdy = Bdy-Src;
-Def = 1-Bdy-Src;
+% Bdy = Bdy-Src;
+Def = 1-Bdy;
 % SrcValue = 0.5;
 
-b = b+BactValue*Src;
+b = b.*(1-Src)+BactValue*Src;
 
 %% Flux
 % % % Hughes
@@ -248,7 +248,7 @@ b = b - Dt/Dx*(LF(:,2:end)-LF(:,1:end-1))...
 % Dirichlet 0 + flux limiter at exit
 % b = b.*Def+PhiAt.*min(b,0.2*ones(size(b)));
 % Dirichlet 0
-b = b.*Def;
+b = b.*(Def-Src);
 end
 
 function b = fAdvectionY_dev(Dt,b,Vy,Bdy,Src)
@@ -258,9 +258,11 @@ global Dx A D BactValue
 %% Parameters
 s = size(b);
 nx = s(2); % 
-Bdy = Bdy-Src;
-Def = 1-Bdy-Src;
-b = b+BactValue*Src;
+% Bdy = Bdy-Src;
+Def = 1-Bdy;
+% SrcValue = 0.5;
+
+b = b.*(1-Src)+BactValue*Src;
 
 %% Flux
 % % Hughes
@@ -300,7 +302,7 @@ b = b - Dt/Dx*(LG(2:end,:)-LG(1:end-1,:))...
 
 %% Boundary conditions 2
 % Dirichlet 0
-b = b.*Def;
+b = b.*(Def-Src);
 end
 
 

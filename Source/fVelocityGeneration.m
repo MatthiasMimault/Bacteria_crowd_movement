@@ -3,7 +3,7 @@ function [Vxo, Vyo] = fVelocityGeneration(X, Y, domAt, domBd, domSrc)
 %of definition, the grid and type
 global Dx typeVel
 
-domDef = 1-domBd+domSrc;
+domDef = 1-domBd;
 
 switch typeVel
     case 'leftright0'
@@ -34,7 +34,7 @@ switch typeVel
         PhiC = fEikonalCost(X,Y,ones(size(X)),domBd-domAt,domAt);
 %         PhiC = X;
         [Vxo,Vyo] = fDiffFlex(PhiC,domDef,Dx,Dx);
-        Vn = sqrt(Vxo.^2+Vyo.^2+domBd+domAt);
+        Vn = sqrt(Vxo.^2+Vyo.^2+1-domDef);
         Vxo = -Vxo./Vn;
         Vxo(isnan(Vxo)) = 0;
         Vxo = Vxo.*domDef;

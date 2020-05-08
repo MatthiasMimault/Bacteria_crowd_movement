@@ -1,6 +1,6 @@
 function [domAt, domBd, domDef, domSrc] = fRegionGeneration(...
 X, Y, Space, Attractant, Source)
-global Dx Dy typeAt typeObs typeSrc 
+global Dx Dy typeAt typeObs typeSrc dev
 % Define the numerical domain of definition, attractant, boundary and
 % source based on geometric input and a grid X;
 % Pending: obstacle generation
@@ -9,7 +9,11 @@ global Dx Dy typeAt typeObs typeSrc
 domAt = fAttractantGen(X,Y,Dx,Dy,Attractant,typeAt);
 
 % Source region
-domSrc = fSourceGen(X,Y,Dx,Dy,Source,typeSrc);
+if dev 
+    domSrc = fSourceGen_dev(X,Y,Dx,Dy,Source,Space,typeSrc);
+else
+    domSrc = fSourceGen(X,Y,Dx,Dy,Source,typeSrc);
+end
 
 % Boundary region
 domBd = fBoundaryGen(X,Y,Dx,Dy,Space,Attractant,domAt,domSrc, typeObs);
@@ -48,11 +52,26 @@ switch typeSrc
         domSrc = (X>Source(1)-Dx/2).*(X<Source(2)+Dx/2)...
         .*(Y>Source(3)-Dy/2).*(Y<Source(4)+Dy/2);
     case 'Ulow'
-        domSrc = ones(size(X))...
-        -(X>Source(1)-Dx/2).*(X<Source(2)+Dx/2)...
+        domSrc = (X>Source(1)-Dx/2).*(X<Source(2)+Dx/2)...
         .*(Y>Source(3)-Dy/2).*(Y<Source(4)+Dy/2);
-        domSrc = domSrc.*(Y<0);
-    
+        domSrc = domSrc.*(Y<0);    
+    otherwise
+        domSrc = zeros(size(X));
+end
+end
+
+function domSrc = fSourceGen_dev(X,Y,Dx,Dy,Source,Space,typeSrc)
+% domBd = zeros(size(X));
+switch typeSrc
+    case 'bottom'
+        domSrc = (X>Source(1)-Dx/2).*(X<Source(2)+Dx/2)...
+        .*(Y>Source(3)-Dy/2).*(Y<Source(4)+Dy/2);
+    case 'Ulow'
+        domSrc = (X>Source(1)-Dx/2).*(X<Source(2)+Dx/2)...
+        .*(Y>Source(3)-Dy/2).*(Y<Source(4)+Dy/2);
+        domDef = (X>Space(1)-Dx/2).*(X<Space(2)-Dx/2)...
+        .*(Y>Space(3)-Dy/2).*(Y<Space(4)-Dy/2);
+        domSrc = domSrc.*(1-domDef);    
     otherwise
         domSrc = zeros(size(X));
 end
@@ -62,12 +81,13 @@ function domBd = fBoundaryGen(X,Y,Dx,Dy,Space,Attractant,domAt,domSrc, typeObs)
 % Generate wall boundary, and obstacles. It includes domAt and domSrc
 global Ro ro
 %% Initialisation with wall boundary
-domBd = (X<Space(1)+Dx/2)+(X>Space(2)-Dx/2)...
-    +(Y<Space(3)+Dy/2).*(X<=Space(2)-Dx/2).*(X>=Space(1)+Dx/2)...
-    +(Y>Space(4)-Dy/2).*(X<=Space(2)-Dx/2).*(X>=Space(1)+Dx/2);
+% domBd = (X<Space(1)+Dx/2)+(X>Space(2)-Dx/2)...
+%     +(Y<Space(3)+Dy/2).*(X<=Space(2)-Dx/2).*(X>=Space(1)+Dx/2)...
+%     +(Y>Space(4)-Dy/2).*(X<=Space(2)-Dx/2).*(X>=Space(1)+Dx/2);
+domBd = 1-(X>=Space(1)-Dx/2).*(X<=Space(2)-Dx/2).*(Y>=Space(3)-Dy/2).*(Y<=Space(4)-Dy/2);
 
 %% Inclusion of Attractant and Source
-domBd = max(max(domAt,domSrc),domBd);
+domBd = max(domAt,domBd);
 % Required: find a test of Attractant-Space-Source connectivity
 
 %% Obstacle generation
@@ -88,25 +108,9 @@ switch typeObs
         
         domBd = domBd+ones(size(X)).*(((X-Xo).^2+(Y-Yo).^2)<=R^2);
         
-%         stale
-%         switch dev
-%             case 0
-%                 if ((Xo-2*sqrt(R))>Space(1) && (Xo+2*sqrt(R))<Space(2)...
-%                         && (Yo-2*sqrt(R))>Space(3)&& (Yo+2*sqrt(R))<Space(4))
-%                     domBd = domBd...
-%                     +ones(size(X)).*(((X-Xo).^2+(Y-Yo).^2)<=R^2);
-%                 end
-%             case 1
-%                 if (Obstacle(n,1)-(Ro-ro)>Space(1) && Obstacle(n,2)+(Ro-ro)<Space(2)...
-%                         && Obstacle(n,3)-(Ro-ro)>Space(3)&& Obstacle(n,4)+(Ro-ro)<Space(4))
-%                     domBd = domBd...
-%                     +ones(size(X)).*(((X-Xo).^2+(Y-Yo).^2)<=R^2);
-%                 end
-%             case 2
-%                 domBd = domBd...
-%                     +ones(size(X)).*(((X-Xo).^2+(Y-Yo).^2)<=R^2);
-%                 
-%         end
+        
     end
+    otherwise
+        domBd = domBd.*(1-domSrc);
 end
 end

@@ -6,7 +6,7 @@ close all
 % Initialisation
 % nameFolder = [nameFolder '\'];
 load([dataRoot '\Data-' caseName '\' fileName '-init'],...
-    'Axis', 'Nfiles','domBd');
+    'Axis', 'Nfiles','domBd','domSrc');
 
 if strcmp(type,'png')
     folderPngs = [dataRoot '\Png-' caseName '-' fileName '-' num2str(nx)];
@@ -38,7 +38,7 @@ for n = 0:Nfiles-1
     
     % Plot boundary
     hold on
-    plotBd(X,Y,domBd,Axis)
+    plotBd(X,Y,domBd+domSrc,Axis)
     hold off
     
     % Save

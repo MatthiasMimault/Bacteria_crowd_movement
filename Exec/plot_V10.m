@@ -7,7 +7,7 @@ addpath('..\Cases')
 
 %% Graphics settings
 type = 'png'; % png, fig
-scale = [0 20]; %min max bacteria density
+scale = [6 14]; %min max bacteria density
 
 
 %% Run
