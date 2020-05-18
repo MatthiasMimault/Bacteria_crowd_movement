@@ -3,6 +3,7 @@
 % V3.1 - New folder structure for figures: ready for sensitivity analysis
 % V3.2 - New density correction: I original (non-normalised)
 % V3.3 - New density units: 1e6 cells per mL, fixed numerical scheme, clean
+% V3.4 - Fix source update
 % Current: 
 % Pending: Automated case generation, progress bar, plot to post
 close all
@@ -10,7 +11,7 @@ clear
 
 %% 0. Settings
 % Names
-caseTitle = 'DEV-MultiSource';
+caseTitle = 'MultiSource';
 caseDate = '0508';
 runnb = '3';
 suffix = 'T5-Final';

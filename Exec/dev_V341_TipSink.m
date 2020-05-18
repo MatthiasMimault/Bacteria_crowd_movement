@@ -3,6 +3,7 @@
 % V3.1 - New folder structure for figures: ready for sensitivity analysis
 % V3.2 - New density correction: I original (non-normalised)
 % V3.3 - New density units: 1e6 cells per mL, fixed numerical scheme, clean
+% V3.4 - Fix source update, tip sink
 % Current: 
 % Pending: Automated case generation, progress bar, plot to post
 close all
@@ -10,14 +11,14 @@ clear
 
 %% 0. Settings
 % Names
-caseTitle = 'RUN-SimpleCase';
-caseDate = '0506';
-runnb = '7';
-suffix = 'T5-k005D001';
-global T Dx Dy nx CFL A D BactValue 
+caseTitle = 'TipSink2';
+caseDate = '0518';
+runnb = '1';
+suffix = 'T5-Col02';
+global T Dx Dy nx CFL A D BactValue domAt domBd domSrc domDef
 
 % input file
-input_V33
+input_V34
 
 %% Nothing to be modified below
 typeRepulsion = 0;
