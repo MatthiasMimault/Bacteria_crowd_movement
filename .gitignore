@@ -1,9 +1,5 @@
 
-COM*/
-Debug/
-Cases
-Data/*
-Debug/*
-Figures/*
-DEV-*/
-*/*.mat
+*.png
+*.mat
+Outputs/
+Resources/

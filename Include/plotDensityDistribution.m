@@ -9,13 +9,13 @@ load([dataRoot '\Data-' caseName '\' fileName '-init'],...
     'Axis', 'Nfiles','domBd','domSrc');
 
 if strcmp(type,'png')
-    folderPngs = [dataRoot '\Png-' caseName '-' fileName '-' num2str(nx)];
+    folderPngs = [dataRoot '\Png-' caseName];
     if exist(folderPngs, 'dir') == 0
         mkdir(folderPngs)
     end
     
 else
-    folderFigs = [dataRoot '\Fig-' caseName '-' fileName '-' num2str(nx)];
+    folderFigs = [dataRoot '\Fig-' caseName];
     
     if exist(folderFigs, 'dir') == 0
         mkdir(folderFigs)
