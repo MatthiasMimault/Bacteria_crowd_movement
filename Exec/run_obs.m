@@ -1,10 +1,5 @@
 %% Executable script for Bacteria Movement model
-% V3.0 - New structure, bacteria max density: 200 cells per mm^2
-% V3.1 - New folder structure for figures: ready for sensitivity analysis
-% V3.2 - New density correction: I original (non-normalised)
-% V3.3 - New density units: 1e6 cells per mL, fixed numerical scheme, clean
-% V3.4 - Fix source update, tip sink
-% V3.5 - Update: new structure, clean archives (minor version)
+% 3.51: fix lattice generation
 % Current: 
 % Pending: Automated case generation, progress bar, plot to post
 close all
@@ -12,13 +7,25 @@ clear
 
 %% 0. Settings
 % Names
-caseTitle = 'RunTest-V35';
-caseDate = '0819'; %MD
-suffix = '1';
-global T Dx Dy nx CFL A D BactValue domAt domBd domSrc domDef
+caseTitle = 'DV-Obs';
+caseDate = '1204'; %MD
+suffix = 'dev3';
+global T Dx Dy nx CFL A D Ro R BactValue domAt domBd domSrc domDef
 
-% input file
-input_V35
+% Load default parameters
+input_InitialBacteria_V35
+
+% Custom parameters
+Nfiles = 5; 
+D = 0.05;
+R = 1;
+nx = 400;
+
+typeObs = 'particles'; % none, particles
+Ro = 4;
+Domain = [-10, 10, -14.5, 6];
+Space = [-8, 8, -13.2, 5];
+InitBact = Space;
 
 %% Nothing to be modified below
 typeRepulsion = 0;
@@ -118,4 +125,6 @@ save([dataRoot '\Data-' caseName '\' fileName '-init'],...
     'B','Tcomp','tt','TT','-append')
 postLogGeneration([dataRoot '\Data-' caseName '\'], caseName,...
     Domain, Space, Attractant, Source, InitBact)
+
+plot_V35
 

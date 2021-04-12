@@ -7,7 +7,7 @@ addpath('..\Outputs')
 
 %% Graphics settings
 type = 'png'; % png, fig
-scale = [10 200]; %min max bacteria density
+scale = [20 100]; %min max bacteria density
 
 
 %% Run

@@ -91,7 +91,7 @@ domBd = max(domAt,domBd);
 % Required: find a test of Attractant-Space-Source connectivity
 
 %% Obstacle generation
-% Required on V3.1
+% Lattice generation fixed on 12/04
 switch typeObs
     case 'particles'
         % Ro length between two consecutive centres, ro radius obstacle
@@ -103,8 +103,8 @@ switch typeObs
     for n = 1:No
     %     R = sqrt(Obstacle(n,2)-Obstacle(n,1)-Dx);
         R = 0.5*(Obstacle(n,2)-Obstacle(n,1));
-        Xo = Obstacle(n,1)+Ro/2;
-        Yo = Obstacle(n,3)+Ro/2;
+        Xo = Obstacle(n,1)+ro/2;
+        Yo = Obstacle(n,3)+ro/2;
         
         domBd = domBd+ones(size(X)).*(((X-Xo).^2+(Y-Yo).^2)<=R^2);
         

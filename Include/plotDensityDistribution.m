@@ -28,7 +28,7 @@ tic
 date = datestr(datetime('now','TimeZone','local','Format','d-MMM-y HH:mm:ss Z'));
 fprintf(['Start : ' date '\n']);
 
-for n = 0:Nfiles-1 
+for n = 1:Nfiles-1 
     % Load
     s = sprintf('%03s',num2str(n,'%d'));
     load([dataRoot '\Data-' caseName '\' fileName '-' s],...
