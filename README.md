@@ -12,3 +12,7 @@ You can modify its parameters in section 0 (Domain, density, interaction strengh
 To plot
 Go to Exec and run the desired plot script (for instance run_V10_0428_EasyRun)
 You can choose a type of output (fig or png) and a scale of density (min-max)
+
+# References
+Nonlocal conservation laws Rinaldo for deviation term
+Experimental bacteria observation for the filaments

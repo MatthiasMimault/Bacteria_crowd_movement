@@ -93,23 +93,38 @@ domBd = max(domAt,domBd);
 %% Obstacle generation
 % Lattice generation fixed on 12/04
 switch typeObs
+    case 'large-ptc'
+        % Obstacle format is a list of boxes
+        Obstacle = [Space(1)+ro, Space(1)+3*ro, Space(3)+ro,...
+            Space(3)+3*ro; Space(2)-3*ro, Space(2)-ro, Space(4)-3*ro,...
+            Space(4)-ro];
+        s = size(Obstacle);
+        No = s(1);
+
+        for n = 1:No
+        %     R = sqrt(Obstacle(n,2)-Obstacle(n,1)-Dx);
+            R = 0.5*(Obstacle(n,2)-Obstacle(n,1));
+            Xo = Obstacle(n,1)+ro;
+            Yo = Obstacle(n,3)+ro;
+
+            domBd = domBd+ones(size(X)).*(((X-Xo).^2+(Y-Yo).^2)<=R^2); 
+        end
+        
     case 'particles'
-        % Ro length between two consecutive centres, ro radius obstacle
-%     Ro = 8; ro = 4;
-    Obstacle = fObstacleGeneration(Space,Attractant,Ro,ro);
-    s = size(Obstacle);
-    No = s(1);
-    
-    for n = 1:No
-    %     R = sqrt(Obstacle(n,2)-Obstacle(n,1)-Dx);
-        R = 0.5*(Obstacle(n,2)-Obstacle(n,1));
-        Xo = Obstacle(n,1)+ro/2;
-        Yo = Obstacle(n,3)+ro/2;
-        
-        domBd = domBd+ones(size(X)).*(((X-Xo).^2+(Y-Yo).^2)<=R^2);
-        
-        
-    end
+            % Ro length between two consecutive centres, ro radius obstacle
+    %     Ro = 8; ro = 4;
+        Obstacle = fObstacleGeneration(Space,Attractant,Ro,ro);
+        s = size(Obstacle);
+        No = s(1);
+
+        for n = 1:No
+        %     R = sqrt(Obstacle(n,2)-Obstacle(n,1)-Dx);
+            R = 0.5*(Obstacle(n,2)-Obstacle(n,1));
+            Xo = Obstacle(n,1)+ro;
+            Yo = Obstacle(n,3)+ro;
+
+            domBd = domBd+ones(size(X)).*(((X-Xo).^2+(Y-Yo).^2)<=R^2); 
+        end
     otherwise
         domBd = domBd.*(1-domSrc);
 end
