@@ -16,7 +16,7 @@ BactValue = 15; rateCol = 0.2;
 nx = 400;
 Nfiles = 20; 
 CFL = 1;
-dev = 'dev'; % stale, dev, release
+dev = 'release'; % stale, dev, release
 
 % Domain
 % particles - porosity 65%

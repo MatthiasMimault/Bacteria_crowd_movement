@@ -1,25 +1,37 @@
-%% Executable script for Bacteria Movement model
-% 3.51: fix lattice generation
-% Current: 
-% Pending: Automated case generation, progress bar, plot to post
+%% Executable script for Bacteria Crowd Movement model
+%     Copyright (C) 2021  Matthias Mimault
+%     Contact matthias.mimault -at- hutton.ac.uk
+% 
+%     This program is free software: you can redistribute it and/or modify
+%     it under the terms of the GNU General Public License as published by
+%     the Free Software Foundation, either version 3 of the License, or
+%     (at your option) any later version.
+% 
+%     This program is distributed in the hope that it will be useful,
+%     but WITHOUT ANY WARRANTY; without even the implied warranty of
+%     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+%     GNU General Public License for more details.
+% 
+%     You should have received a copy of the GNU General Public License
+%     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 close all
 clear
 
 %% 0. Settings
 % Names
-caseTitle = 'DV-Obs';
-caseDate = '1204'; %MD
-suffix = 'dev3';
+caseTitle = 'Obstacles';
+caseDate = '0906'; %MD
+suffix = 'simple_1';
 global T Dx Dy nx CFL A D Ro R BactValue domAt domBd domSrc domDef
 
 % Load default parameters
-input_InitialBacteria_V35
+input_parameters
 
 % Custom parameters
 Nfiles = 5; 
 D = 0.05;
 R = 1;
-nx = 400;
+nx = 200;
 
 typeObs = 'particles'; % none, particles
 Ro = 4;
@@ -36,6 +48,12 @@ addpath('..\Source')
 addpath('..\Outputs')
 [dataRoot, caseName, fileName] = fFolderMaker35( ...
     caseTitle, caseDate, nx, suffix);
+
+% Licence disclaimer
+disp('Bacteria crowd mvt. model  Copyright (C) 2021  Matthias Mimault')
+disp('This program comes with ABSOLUTELY NO WARRANTY. This is free') 
+disp('software and you are welcome to redistribute it under certain')
+disp('conditions.')
 
 %% 1. Initialisation grid and dependant parameters
 [X,Y,Dx,Dy] = fGridGeneration(nx,Domain);
@@ -126,5 +144,5 @@ save([dataRoot '\Data-' caseName '\' fileName '-init'],...
 postLogGeneration([dataRoot '\Data-' caseName '\'], caseName,...
     Domain, Space, Attractant, Source, InitBact)
 
-plot_V35
+plot_gener
 
