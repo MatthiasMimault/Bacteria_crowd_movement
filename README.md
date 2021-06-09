@@ -12,13 +12,14 @@ but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 GNU General Public License for more details.
 
+# Description
 Matlab code. 2D finite volume model with nonlocal interaction
 
 Features: Zero flux Neumann boundary, source boundary, attraction (eikonal 
 equation), attraction (neighbourhood), diffusion, vector field timer switch, 
 log generator
 
-Usage:
+# Usage
 To run
 Go to Exec and run the desired run script (for instance run.m)
 You can modify its parameters in section 0 (Domain, density, interaction 
