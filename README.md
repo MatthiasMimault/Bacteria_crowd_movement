@@ -1,6 +1,6 @@
 # Bacteria Crowd Movement model
-Copyright (C) 2021  Matthias Mimault, Lionel Dupuy
-Contact matthias.mimault -at- hutton.ac.uk
+Copyright (C) 2021  Matthias Mimault, Lionel Dupuy  
+Contact matthias.mimault -at- hutton.ac.uk  
 	ldupuy -at- neiker.eus
 
 This program is free software: you can redistribute it and/or modify
